@@ -19,10 +19,12 @@ function RambiResponse(resp) {
 
 	this.print = function(val) {
 		_resp.getWriter().print(val);
+		_resp.getWriter().flush();
 	}
 
 	this.println = function(val) {
 		_resp.getWriter().println(val);
+		_resp.getWriter().flush();
 	}
 
 }
