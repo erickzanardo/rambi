@@ -60,22 +60,26 @@ public class RambiScriptMachine {
 
 		if (service != null) {
 			Context cx = Context.enter();
-
-			StringBuilder scriptStr = new StringBuilder();
-			scriptStr.append(readFile("com/rambi/core/service.js"));
-			scriptStr.append(readFile(service));
-
-			ScriptableObject scriptableObject = cx.initStandardObjects();
-
-			// TODO cache this
-			Script script = cx.compileString(scriptStr.toString(), service, 1, null);
-			script.exec(cx, scriptableObject);
-
-			Function f = (Function) scriptableObject.get("doService");
-			f.call(cx, global, scriptableObject, new Object[] { req, resp, req.getMethod().toLowerCase() });
+			String method = req.getMethod().toLowerCase();
 
 			try {
+				StringBuilder scriptStr = new StringBuilder();
+				scriptStr.append(readFile("com/rambi/core/service.js"));
+				scriptStr.append(readFile(service));
 
+				ScriptableObject scriptableObject = cx.initStandardObjects();
+
+				// TODO cache this
+				Script script = cx.compileString(scriptStr.toString(), service, 1, null);
+				script.exec(cx, scriptableObject);
+
+				Function f = (Function) scriptableObject.get("doService");
+				f.call(cx, global, scriptableObject, new Object[] { req, resp, method });
+			} catch (Exception e) {
+				if (e.getMessage().startsWith("unsupported")) {
+					throw new UnsupportedOperationException("Method " + method + " not allowed in this url "
+							+ req.getRequestURI());
+				}
 			} finally {
 				Context.exit();
 			}

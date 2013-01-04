@@ -2,7 +2,7 @@ function doService(req, resp, type) {
 	if (service[type]) {
 		service[type](new RambiRequest(req), new RambiResponse(resp));
 	} else {
-		// TODO throw exception
+		throw "unsupported";
 	}
 }
 

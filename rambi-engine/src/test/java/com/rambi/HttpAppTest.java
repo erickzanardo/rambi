@@ -1,6 +1,6 @@
 package com.rambi;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -40,6 +40,25 @@ public class HttpAppTest {
 		RambiScriptMachine.getInstance().executeHttpRequest(
 				req, responseMock);
 
-		assertEquals("param - Mock Value", responseMock.getOutData());
+		assertEquals("param - Mock Valueparam - Mock Value\n", responseMock.getOutData());
 	}
+
+	@Test(expected=UnsupportedOperationException.class)
+	public void testHttpRequestUnsupported() {
+		HttpServletRequest req = new RequestMock() {
+			@Override
+			public String getRequestURI() {
+				return "mock/mock";
+			}
+			@Override
+			public String getMethod() {
+				return "DELETE";
+			}
+		};
+
+		ResponseMock responseMock = new ResponseMock();
+		RambiScriptMachine.getInstance().executeHttpRequest(
+				req, responseMock);
+	}
+
 }
