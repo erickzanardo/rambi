@@ -40,7 +40,7 @@ public class HttpAppTest {
 		RambiScriptMachine.getInstance().executeHttpRequest(
 				req, responseMock);
 
-		assertEquals("param - Mock Valueparam - Mock Value\n", responseMock.getOutData());
+		assertEquals("param - Mock Valueparam - Mock Value\na a", responseMock.getOutData());
 	}
 
 	@Test(expected=UnsupportedOperationException.class)

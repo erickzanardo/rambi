@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,9 +22,12 @@ import com.google.gson.JsonParser;
 
 public class RambiScriptMachine {
 	public static RambiScriptMachine instance;
+	private static final String IMPORT_REGEXP = "import (.*);";
+	
 	private JsonParser parser = new JsonParser();
 	private JsonArray config;
 	private ScriptableObject global;
+	private Pattern pattern = Pattern.compile(IMPORT_REGEXP);;
 
 	public void init(String appConfig) {
 		config = parser.parse(readFile(appConfig)).getAsJsonArray();
@@ -65,7 +70,9 @@ public class RambiScriptMachine {
 			try {
 				StringBuilder scriptStr = new StringBuilder();
 				scriptStr.append(readFile("com/rambi/core/service.js"));
-				scriptStr.append(readFile(service));
+				
+				String serviceScript = readFile(service);
+				scriptStr.append(resolveImports(serviceScript));
 
 				ScriptableObject scriptableObject = cx.initStandardObjects();
 
@@ -79,11 +86,32 @@ public class RambiScriptMachine {
 				if (e.getMessage().startsWith("unsupported")) {
 					throw new UnsupportedOperationException("Method " + method + " not allowed in this url "
 							+ req.getRequestURI());
+				} else {
+					throw new RuntimeException(e);
 				}
 			} finally {
 				Context.exit();
 			}
 		}
+	}
+
+	private String resolveImports(String service) {
+		
+		StringBuilder ret = new StringBuilder();
+		Matcher matcher = pattern.matcher(service);
+		
+		while (matcher.find()) {
+			String group = matcher.group();
+			group = group.replaceAll("import ", "").replace(";", "");
+			String readFile = readFile(group);
+
+			ret.append(resolveImports(readFile));
+			service = matcher.replaceFirst("");
+		}
+		
+		ret.append(service);
+		
+		return ret.toString();
 	}
 
 	protected String readFile(String file) {
