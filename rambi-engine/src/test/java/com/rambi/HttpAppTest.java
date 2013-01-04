@@ -10,7 +10,7 @@ import org.junit.Test;
 import com.rambi.core.RambiScriptMachine;
 
 public class HttpAppTest {
-	private String appConfig = "";
+	private String appConfig = "com/rambi/HttpAppTestConfig.js";
 
 	@Before
 	public void init() {
@@ -21,20 +21,25 @@ public class HttpAppTest {
 	public void testHttpRequest() {
 		HttpServletRequest req = new RequestMock() {
 			@Override
-			public String getQueryString() {
-				return "mock/mock?param=param";
+			public String getRequestURI() {
+				return "mock/mock";
 			}
 
 			@Override
 			public String getParameter(String param) {
 				return param + " - Mock Value";
 			}
+
+			@Override
+			public String getMethod() {
+				return "GET";
+			}
 		};
 
 		ResponseMock responseMock = new ResponseMock();
-		String response = RambiScriptMachine.getInstance().executeHttpRequest(
+		RambiScriptMachine.getInstance().executeHttpRequest(
 				req, responseMock);
 
-		assertEquals("param - Mock Value", response);
+		assertEquals("param - Mock Value", responseMock.getOutData());
 	}
 }
