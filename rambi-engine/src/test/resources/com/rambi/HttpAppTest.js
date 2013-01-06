@@ -1,3 +1,5 @@
+// redundant import
+import com/rambi/HttpAppTestImports2.js;
 import com/rambi/HttpAppTestImports.js;
 
 var service = {

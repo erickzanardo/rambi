@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -72,7 +74,7 @@ public class RambiScriptMachine {
 				scriptStr.append(readFile("com/rambi/core/service.js"));
 				
 				String serviceScript = readFile(service);
-				scriptStr.append(resolveImports(serviceScript));
+				scriptStr.append(resolveImports(serviceScript, new ArrayList<String>()));
 
 				ScriptableObject scriptableObject = cx.initStandardObjects();
 
@@ -95,7 +97,7 @@ public class RambiScriptMachine {
 		}
 	}
 
-	private String resolveImports(String service) {
+	private String resolveImports(String service, List<String> imports) {
 		
 		StringBuilder ret = new StringBuilder();
 		Matcher matcher = pattern.matcher(service);
@@ -103,10 +105,13 @@ public class RambiScriptMachine {
 		while (matcher.find()) {
 			String group = matcher.group();
 			group = group.replaceAll("import ", "").replace(";", "");
-			String readFile = readFile(group);
-
-			ret.append(resolveImports(readFile));
-			service = matcher.replaceFirst("");
+			if (!imports.contains(group)) {
+				imports.add(group);
+				String readFile = readFile(group);
+				
+				ret.append(resolveImports(readFile, imports));
+			}
+			service = service.replaceFirst(IMPORT_REGEXP, "");
 		}
 		
 		ret.append(service);
