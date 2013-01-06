@@ -17,6 +17,15 @@ import javax.servlet.http.HttpSession;
 @SuppressWarnings("rawtypes")
 public class RequestMock implements HttpServletRequest {
 
+	private String uri;
+	private String method;
+
+	public RequestMock(String uri, String method) {
+		super();
+		this.uri = uri;
+		this.method = method;
+	}
+
 	@Override
 	public Object getAttribute(String arg0) {
 		return null;
@@ -205,7 +214,7 @@ public class RequestMock implements HttpServletRequest {
 
 	@Override
 	public String getMethod() {
-		return null;
+		return method;
 	}
 
 	@Override
@@ -230,7 +239,7 @@ public class RequestMock implements HttpServletRequest {
 
 	@Override
 	public String getRequestURI() {
-		return null;
+		return uri;
 	}
 
 	@Override

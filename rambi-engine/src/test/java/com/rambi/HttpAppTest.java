@@ -19,46 +19,26 @@ public class HttpAppTest {
 
 	@Test
 	public void testHttpRequest() {
-		HttpServletRequest req = new RequestMock() {
-			@Override
-			public String getRequestURI() {
-				return "mock/mock";
-			}
-
+		HttpServletRequest req = new RequestMock("mock/mock", "GET") {
 			@Override
 			public String getParameter(String param) {
 				return param + " - Mock Value";
 			}
-
-			@Override
-			public String getMethod() {
-				return "GET";
-			}
 		};
 
 		ResponseMock responseMock = new ResponseMock();
-		RambiScriptMachine.getInstance().executeHttpRequest(
-				req, responseMock);
+		RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock);
 
-		assertEquals("param - Mock Valueparam - Mock Value\na a", responseMock.getOutData());
+		assertEquals("param - Mock Valueparam - Mock Value\na a",
+				responseMock.getOutData());
 	}
 
-	@Test(expected=UnsupportedOperationException.class)
+	@Test(expected = UnsupportedOperationException.class)
 	public void testHttpRequestUnsupported() {
-		HttpServletRequest req = new RequestMock() {
-			@Override
-			public String getRequestURI() {
-				return "mock/mock";
-			}
-			@Override
-			public String getMethod() {
-				return "DELETE";
-			}
-		};
+		HttpServletRequest req = new RequestMock("mock/mock", "DELETE");
 
 		ResponseMock responseMock = new ResponseMock();
-		RambiScriptMachine.getInstance().executeHttpRequest(
-				req, responseMock);
+		RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock);
 	}
 
 }
