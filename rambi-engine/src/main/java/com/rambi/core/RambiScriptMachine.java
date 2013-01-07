@@ -4,19 +4,15 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.mozilla.javascript.Context;
-import org.mozilla.javascript.EvaluatorException;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ImporterTopLevel;
 import org.mozilla.javascript.Script;
+import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
 import com.google.gson.JsonArray;
@@ -26,19 +22,24 @@ import com.google.gson.JsonParser;
 
 public class RambiScriptMachine {
 	public static RambiScriptMachine instance;
-	private static final String IMPORT_REGEXP = "import (.*);";
 
 	private JsonParser parser = new JsonParser();
 	private JsonArray config;
 	private ScriptableObject global;
-	private Pattern pattern = Pattern.compile(IMPORT_REGEXP);;
 
 	public void init(String appConfig) {
 		config = parser.parse(readFile(appConfig)).getAsJsonArray();
 
-		Context enter = Context.enter();
+		Context cx = Context.enter();
 
-		global = enter.initStandardObjects();
+		global = new ImporterTopLevel(cx);
+		global.defineFunctionProperties(new String[] { "importModule" }, RambiScriptMachine.class,
+				ScriptableObject.DONTENUM);
+
+		String services = RambiScriptMachine.readFile("com/rambi/core/service.js");
+
+		Script servicesScript = cx.compileString(services, "services.js", 1, null);
+		servicesScript.exec(cx, global);
 
 		Context.exit();
 	}
@@ -53,8 +54,7 @@ public class RambiScriptMachine {
 		return instance;
 	}
 
-	public void executeHttpRequest(HttpServletRequest req,
-			HttpServletResponse resp) {
+	public void executeHttpRequest(HttpServletRequest req, HttpServletResponse resp) {
 
 		String uri = req.getRequestURI();
 		String service = null;
@@ -72,30 +72,25 @@ public class RambiScriptMachine {
 			Context cx = Context.enter();
 			String method = req.getMethod().toLowerCase();
 
-			StringBuilder scriptStr = new StringBuilder();
-			scriptStr.append(readFile("com/rambi/core/service.js"));
-			
 			String serviceScript = readFile(service);
-			scriptStr.append(resolveImports(serviceScript,
-					new ArrayList<String>()));
+
 			try {
-				
-				ScriptableObject scriptableObject = new ImporterTopLevel(cx);
+
+				ScriptableObject scriptableObject = (ScriptableObject) cx.newObject(global);
+				scriptableObject.setParentScope(global);
+
 				// TODO cache this
-				Script script = cx.compileString(scriptStr.toString(), service,
-						1, null);
+				Script script = cx.compileString(serviceScript, service, 1, null);
 				script.exec(cx, scriptableObject);
 
-				Function f = (Function) scriptableObject.get("doService");
-				f.call(cx, global, scriptableObject, new Object[] { req, resp,
-						method });
-			} catch (EvaluatorException e) {
-				System.out.println(scriptStr.toString());
-				e.printStackTrace();
+				Function f = (Function) global.get("doService");
+				f.call(cx, global, scriptableObject,
+						new Object[] {scriptableObject.get("service"), req, resp, method });
+
 			} catch (Exception e) {
 				if (e.getMessage().startsWith("unsupported")) {
-					throw new UnsupportedOperationException("Method " + method
-							+ " not allowed in this url " + req.getRequestURI());
+					throw new UnsupportedOperationException("Method " + method + " not allowed in this url "
+							+ req.getRequestURI());
 				} else {
 					throw new RuntimeException(e);
 				}
@@ -105,35 +100,32 @@ public class RambiScriptMachine {
 		}
 	}
 
-	private String resolveImports(String service, List<String> imports) {
+	public static ScriptableObject importModule(Context cx, Scriptable thisObj, Object[] args, Function funObj) {
+		ScriptableObject object = null;
 
-		StringBuilder ret = new StringBuilder();
-		Matcher matcher = pattern.matcher(service);
-
-		while (matcher.find()) {
-			String group = matcher.group();
-			group = group.replaceAll("import ", "").replace(";", "");
-			if (!imports.contains(group)) {
-				imports.add(group);
-				String readFile = readFile(group);
-
-				ret.append(resolveImports(readFile, imports));
-			}
-			service = service.replaceFirst(IMPORT_REGEXP, "");
+		if (args.length != 2) {
+			throw new RuntimeException("Must inform a path and module to import");
 		}
 
-		ret.append(service);
+		String path = (String) args[0];
+		String module = (String) args[1];
+		String file = RambiScriptMachine.readFile(path);
 
-		return ret.toString();
+		object = (ScriptableObject) cx.newObject(thisObj);
+
+		// TODO cache
+		Script script = cx.compileString(file, path, 1, null);
+		script.exec(cx, object);
+
+		return (ScriptableObject)ScriptableObject.getProperty(object, module);
 	}
 
-	protected String readFile(String file) {
+	protected static String readFile(String file) {
 		BufferedReader br = null;
 		StringBuilder ret = new StringBuilder();
 
 		try {
-			InputStream resourceAsStream = getClass().getClassLoader()
-					.getResourceAsStream(file);
+			InputStream resourceAsStream = RambiScriptMachine.class.getClassLoader().getResourceAsStream(file);
 			String line;
 			br = new BufferedReader(new InputStreamReader(resourceAsStream));
 

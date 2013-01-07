@@ -1,5 +1,5 @@
-import com/rambi/core/datastore.js;
 importClass(java.lang.Integer);
+var db = importModule('com/rambi/core/datastore.js', 'db');
 
 var service = {
     get : function(req, resp) {
@@ -25,5 +25,4 @@ var service = {
         var key = db().put("Kind", data);
         resp.print(key);
     },
-
 };

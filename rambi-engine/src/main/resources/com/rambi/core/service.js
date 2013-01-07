@@ -1,6 +1,6 @@
 importClass(java.lang.System);
 
-function doService(req, resp, type) {
+function doService(service, req, resp, type) {
     if (service[type]) {
         service[type](new RambiRequest(req), new RambiResponse(resp));
     } else {

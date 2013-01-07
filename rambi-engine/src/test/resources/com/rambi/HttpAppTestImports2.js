@@ -1,3 +1,5 @@
-function echo2(p) {
-	return [p, p].join(" ");
+var module = { 
+	echo2: function(p) {
+		return [p, p].join(" ");
+	}
 }

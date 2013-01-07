@@ -1,6 +1,5 @@
-// redundant import
-import com/rambi/HttpAppTestImports2.js;
-import com/rambi/HttpAppTestImports.js;
+var o2 = importModule('com/rambi/HttpAppTestImports2.js', 'module');
+var testObject = importModule('com/rambi/HttpAppTestImports.js', 'module');
 
 var service = {
 	get: function(req, resp) {

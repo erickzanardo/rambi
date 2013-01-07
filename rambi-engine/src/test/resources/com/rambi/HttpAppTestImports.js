@@ -1,7 +1,7 @@
-import com/rambi/HttpAppTestImports2.js;
+var o = importModule('com/rambi/HttpAppTestImports2.js', 'module');
 
-var testObject = {
+var module = {
 	echo: function(p) {
-		return echo2(p);
+		return o.echo2(p);
 	}
 };
