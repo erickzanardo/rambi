@@ -1,4 +1,3 @@
-importClass(java.lang.Integer);
 var db = importModule('com/rambi/core/datastore.js', 'db');
 
 var service = {
