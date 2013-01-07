@@ -98,5 +98,7 @@ public class DatastoreTest {
 		JsonObject resp = (JsonObject) new JsonParser().parse(responseMock
 				.getOutData());
 		assertEquals("POST - value", resp.get("value").getAsString());
+
+		// TODO teste more types, numbers, booleans, lists and dates
 	}
 }
