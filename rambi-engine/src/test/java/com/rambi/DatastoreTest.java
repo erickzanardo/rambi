@@ -2,6 +2,7 @@ package com.rambi;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -98,7 +99,15 @@ public class DatastoreTest {
 		JsonObject resp = (JsonObject) new JsonParser().parse(responseMock
 				.getOutData());
 		assertEquals("POST - value", resp.get("value").getAsString());
+		assertEquals(1, resp.get("numberValue").getAsInt());
+		assertEquals(0.1d, resp.get("decimalValue").getAsDouble(), 0);
 
+		entity = service.get(KeyFactory.createKey("Kind", id));
+		assertNotNull(entity);
+
+		assertTrue(entity.getProperty("numberValue") instanceof Long);
+		assertTrue(entity.getProperty("decimalValue") instanceof Double);
+		
 		// TODO teste more types, numbers, booleans, lists and dates
 	}
 }

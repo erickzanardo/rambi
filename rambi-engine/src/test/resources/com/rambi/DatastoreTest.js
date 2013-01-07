@@ -18,7 +18,9 @@ var service = {
     },
     post : function(req, resp) {
         var data = {
-                value: "POST - value"
+                value: "POST - value",
+                numberValue: 1,
+                decimalValue: 0.1
         };
 
         var key = db().put("Kind", data);

@@ -19,25 +19,24 @@ function RambiRequest(req) {
 function RambiResponse(resp) {
     var _resp = resp;
 
-    var toString = function(val) {
-        if (val != null) {
-            return val.toString();
-        }
-        return null;
-    };
-
     this.print = function(val) {
-        _resp.getWriter().print(toString(val));
+        if (val != null) {
+            _resp.getWriter().print(val.toString());
+        }
     }
 
     this.println = function(val) {
-        _resp.getWriter().println(toString(val));
+        if (val != null) {
+            _resp.getWriter().println(val.toString());
+        }
     }
 
 }
 
 console = {
         info: function(v) {
-            System.out.println(toString(v));
+            if (v != null) {
+                System.out.println(v.toString());
+            }
         }
 };
