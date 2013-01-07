@@ -28,12 +28,10 @@ function RambiResponse(resp) {
 
     this.print = function(val) {
         _resp.getWriter().print(toString(val));
-        _resp.getWriter().flush();
     }
 
     this.println = function(val) {
         _resp.getWriter().println(toString(val));
-        _resp.getWriter().flush();
     }
 
 }
