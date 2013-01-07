@@ -195,6 +195,11 @@ public class ResponseMock implements HttpServletResponse {
 	}
 
 	public String getOutData() {
+		try {
+			getWriter().flush();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 		return outStr.toString();
 	}
 }
