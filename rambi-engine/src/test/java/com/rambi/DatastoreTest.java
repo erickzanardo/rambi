@@ -116,6 +116,6 @@ public class DatastoreTest {
 		assertTrue(entity.getProperty("decimalValue") instanceof Double);
 		assertTrue(entity.getProperty("values") instanceof ArrayList);
 		
-		// TODO teste more types, numbers, booleans, lists and dates
+		// TODO test more types, booleans and dates
 	}
 }
