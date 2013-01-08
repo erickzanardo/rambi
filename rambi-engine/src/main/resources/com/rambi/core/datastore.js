@@ -1,4 +1,5 @@
 importPackage(com.google.appengine.api.datastore);
+importClass(java.util.ArrayList);
 importClass(java.lang.Long);
 importClass(java.lang.Double);
 
@@ -11,6 +12,7 @@ function db() {
         return KeyFactory.createKey(kind, id);
     }
 
+    // JSON data type to JAVA
     var jsonToEntityType = function(v) {
         if (typeof (v) == 'number') {
             if (v % 1 === 0) {
@@ -18,13 +20,19 @@ function db() {
             } else {
                 return new Double(v);
             }
+        } else if (Array.isArray(v)) {
+            var list = new ArrayList();
+            for (var i = 0; i < v.length; i++) {
+                list.add(jsonToEntityType(v[i]));
+            }
+            return list;
         } else {
             return v;
         }
     };
 
+    // JSON to JAVA
     var jsonToEntity = function(json, entity) {
-        // TODO Lists
         for ( var i in json) {
             var v = json[i];
             entity.setProperty(i, jsonToEntityType(v));
@@ -32,17 +40,23 @@ function db() {
         return entity;
     };
 
+    // JAVA data type to JSON 
     var entityToJsonType = function(value) {
         if (value instanceof String) {
             return '' + value;
         } else if (value instanceof java.lang.Number) {
             return new Number(value);
+        } else if (value instanceof ArrayList) {
+            var list = [];
+            for (var i = 0; i < value.size(); i++) {
+                list.push(entityToJsonType(value.get(i)));
+            }
+            return list;
         }
     };
 
+    // JAVA to JSON 
     var entityToJson = function(entity) {
-        // TODO Lists
-
         var json = {};
         var map = entity.getProperties();
 

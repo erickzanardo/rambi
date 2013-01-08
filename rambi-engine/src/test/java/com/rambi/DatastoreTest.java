@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,6 +21,7 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.rambi.core.RambiScriptMachine;
@@ -101,12 +103,18 @@ public class DatastoreTest {
 		assertEquals("POST - value", resp.get("value").getAsString());
 		assertEquals(1, resp.get("numberValue").getAsInt());
 		assertEquals(0.1d, resp.get("decimalValue").getAsDouble(), 0);
+		
+		JsonArray asJsonArray = resp.get("values").getAsJsonArray();
+		assertEquals(1, asJsonArray.get(0).getAsInt());
+		assertEquals(2, asJsonArray.get(1).getAsInt());
+		assertEquals(3, asJsonArray.get(2).getAsInt());
 
 		entity = service.get(KeyFactory.createKey("Kind", id));
 		assertNotNull(entity);
 
 		assertTrue(entity.getProperty("numberValue") instanceof Long);
 		assertTrue(entity.getProperty("decimalValue") instanceof Double);
+		assertTrue(entity.getProperty("values") instanceof ArrayList);
 		
 		// TODO teste more types, numbers, booleans, lists and dates
 	}
