@@ -11,21 +11,33 @@ function db() {
         return KeyFactory.createKey(kind, id);
     }
 
+    var jsonToEntityType = function(v) {
+        if (typeof (v) == 'number') {
+            if (v % 1 === 0) {
+                return new Long(v);
+            } else {
+                return new Double(v);
+            }
+        } else {
+            return v;
+        }
+    };
+
     var jsonToEntity = function(json, entity) {
         // TODO Lists
         for ( var i in json) {
             var v = json[i];
-            if (typeof (v) == 'number') {
-                if (v % 1 === 0) {
-                    entity.setProperty(i, new Long(v));
-                } else {
-                    entity.setProperty(i, new Double(v));
-                }
-            } else {
-                entity.setProperty(i, v);
-            }
+            entity.setProperty(i, jsonToEntityType(v));
         }
         return entity;
+    };
+
+    var entityToJsonType = function(value) {
+        if (value instanceof String) {
+            return '' + value;
+        } else if (value instanceof java.lang.Number) {
+            return new Number(value);
+        }
     };
 
     var entityToJson = function(entity) {
@@ -38,14 +50,7 @@ function db() {
         for ( var i in keys) {
             var key = keys[i];
             var value = map.get(key);
-
-            // Convert from java type, to a js type
-            if (value instanceof String) {
-                json[key] = '' + value;
-            } else if (value instanceof java.lang.Number) {
-                json[key] = new Number(value);
-            }
-
+            json[key] = entityToJsonType(value);
         }
 
         return json;
