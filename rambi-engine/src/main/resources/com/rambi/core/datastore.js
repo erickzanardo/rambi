@@ -20,6 +20,8 @@ function db() {
             } else {
                 return new Double(v);
             }
+        } else if (typeof (v) == 'boolean') {
+        	return new java.lang.Boolean(v);
         } else if (Array.isArray(v)) {
             var list = new ArrayList();
             for (var i = 0; i < v.length; i++) {
@@ -46,6 +48,8 @@ function db() {
             return '' + value;
         } else if (value instanceof java.lang.Number) {
             return new Number(value);
+        } else if (value instanceof java.lang.Boolean) {
+        	return value ? true : false;
         } else if (value instanceof ArrayList) {
             var list = [];
             for (var i = 0; i < value.size(); i++) {

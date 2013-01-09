@@ -21,7 +21,8 @@ var service = {
                 value: "POST - value",
                 numberValue: 1,
                 decimalValue: 0.1,
-                values: [1, 2, 3]
+                values: [1, 2, 3],
+                valid: true
         };
 
         var key = db().put("Kind", data);

@@ -98,16 +98,19 @@ public class DatastoreTest {
 		responseMock = new ResponseMock();
 		RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock);
 
+		// Testing datatypes
 		JsonObject resp = (JsonObject) new JsonParser().parse(responseMock
 				.getOutData());
 		assertEquals("POST - value", resp.get("value").getAsString());
 		assertEquals(1, resp.get("numberValue").getAsInt());
 		assertEquals(0.1d, resp.get("decimalValue").getAsDouble(), 0);
-		
+
 		JsonArray asJsonArray = resp.get("values").getAsJsonArray();
 		assertEquals(1, asJsonArray.get(0).getAsInt());
 		assertEquals(2, asJsonArray.get(1).getAsInt());
 		assertEquals(3, asJsonArray.get(2).getAsInt());
+
+		assertTrue(resp.get("valid").getAsBoolean());
 
 		entity = service.get(KeyFactory.createKey("Kind", id));
 		assertNotNull(entity);
@@ -115,7 +118,8 @@ public class DatastoreTest {
 		assertTrue(entity.getProperty("numberValue") instanceof Long);
 		assertTrue(entity.getProperty("decimalValue") instanceof Double);
 		assertTrue(entity.getProperty("values") instanceof ArrayList);
+		assertTrue(entity.getProperty("valid") instanceof Boolean);
 		
-		// TODO test more types, booleans and dates
+		// TODO test dates
 	}
 }
