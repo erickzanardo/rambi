@@ -20,6 +20,8 @@ function db() {
             } else {
                 return new Double(v);
             }
+        } else if (v instanceof Date) {
+        	return new java.util.Date(v.getTime());
         } else if (typeof (v) == 'boolean') {
         	return new java.lang.Boolean(v);
         } else if (Array.isArray(v)) {
@@ -50,6 +52,8 @@ function db() {
             return new Number(value);
         } else if (value instanceof java.lang.Boolean) {
         	return value ? true : false;
+        } else if (value instanceof java.util.Date) {
+        	return new Date(value.getTime());
         } else if (value instanceof ArrayList) {
             var list = [];
             for (var i = 0; i < value.size(); i++) {

@@ -17,12 +17,19 @@ var service = {
         resp.print(key);
     },
     post : function(req, resp) {
+    	
+    	var d = new Date();
+    	d.setDate(9);
+    	d.setMonth(0);
+    	d.setYear(2013);
+    	
         var data = {
                 value: "POST - value",
                 numberValue: 1,
                 decimalValue: 0.1,
                 values: [1, 2, 3],
-                valid: true
+                valid: true,
+                date: d
         };
 
         var key = db().put("Kind", data);

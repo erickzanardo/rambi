@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,99 +28,96 @@ import com.google.gson.JsonParser;
 import com.rambi.core.RambiScriptMachine;
 
 public class DatastoreTest {
-	private final LocalServiceTestHelper helper = new LocalServiceTestHelper(
-			new LocalDatastoreServiceTestConfig());
+    private final LocalServiceTestHelper helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
 
-	private String appConfig = "com/rambi/DatastoreTestConfig.js";
+    private String appConfig = "com/rambi/DatastoreTestConfig.js";
 
-	@Before
-	public void init() {
-		RambiScriptMachine.getInstance().init(appConfig);
-		helper.setUp();
-	}
+    @Before
+    public void init() {
+        RambiScriptMachine.getInstance().init(appConfig);
+        helper.setUp();
+    }
 
-	@After
-	public void tearDown() {
-		helper.tearDown();
-	}
+    @After
+    public void tearDown() {
+        helper.tearDown();
+    }
 
-	@Test
-	public void testDatastore() throws EntityNotFoundException {
-		// PUT
-		HttpServletRequest req = new RequestMock("mock/mock", "PUT") {
+    @Test
+    public void testDatastore() throws EntityNotFoundException {
+        // PUT
+        HttpServletRequest req = new RequestMock("mock/mock", "PUT") {
 
-			private Map<String, String> params = new HashMap<String, String>();
-			{
-				params.put("key", "5");
-			}
+            private Map<String, String> params = new HashMap<String, String>();
+            {
+                params.put("key", "5");
+            }
 
-			@Override
-			public String getParameter(String param) {
-				return params.get(param);
-			}
-		};
+            @Override
+            public String getParameter(String param) {
+                return params.get(param);
+            }
+        };
 
-		ResponseMock responseMock = new ResponseMock();
-		RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock);
+        ResponseMock responseMock = new ResponseMock();
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock);
 
-		DatastoreService service = DatastoreServiceFactory
-				.getDatastoreService();
+        DatastoreService service = DatastoreServiceFactory.getDatastoreService();
 
-		assertEquals("5", responseMock.getOutData());
-		Entity entity = service.get(KeyFactory.createKey("Kind", 5));
-		assertEquals("PUT - value", entity.getProperty("value"));
-		assertNotNull(entity);
+        assertEquals("5", responseMock.getOutData());
+        Entity entity = service.get(KeyFactory.createKey("Kind", 5));
+        assertEquals("PUT - value", entity.getProperty("value"));
+        assertNotNull(entity);
 
-		// POST
-		req = new RequestMock("mock/mock", "POST");
-		responseMock = new ResponseMock();
-		RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock);
+        // POST
+        req = new RequestMock("mock/mock", "POST");
+        responseMock = new ResponseMock();
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock);
 
-		final long id = Long.parseLong(responseMock.getOutData());
-		entity = service.get(KeyFactory.createKey("Kind", id));
-		assertNotNull(entity);
-		assertEquals("POST - value", entity.getProperty("value"));
+        final long id = Long.parseLong(responseMock.getOutData());
+        entity = service.get(KeyFactory.createKey("Kind", id));
+        assertNotNull(entity);
+        assertEquals("POST - value", entity.getProperty("value"));
 
-		// GET
-		req = new RequestMock("mock/mock", "GET") {
+        // GET
+        req = new RequestMock("mock/mock", "GET") {
 
-			private Map<String, String> params = new HashMap<String, String>();
-			{
-				params.put("key", String.valueOf(id));
-				params.put("kind", "Kind");
-			}
+            private Map<String, String> params = new HashMap<String, String>();
+            {
+                params.put("key", String.valueOf(id));
+                params.put("kind", "Kind");
+            }
 
-			@Override
-			public String getParameter(String param) {
-				return params.get(param);
-			}
-		};
+            @Override
+            public String getParameter(String param) {
+                return params.get(param);
+            }
+        };
 
-		responseMock = new ResponseMock();
-		RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock);
+        responseMock = new ResponseMock();
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock);
 
-		// Testing datatypes
-		JsonObject resp = (JsonObject) new JsonParser().parse(responseMock
-				.getOutData());
-		assertEquals("POST - value", resp.get("value").getAsString());
-		assertEquals(1, resp.get("numberValue").getAsInt());
-		assertEquals(0.1d, resp.get("decimalValue").getAsDouble(), 0);
+        // Testing datatypes
+        JsonObject resp = (JsonObject) new JsonParser().parse(responseMock.getOutData());
+        assertEquals("POST - value", resp.get("value").getAsString());
+        assertEquals(1, resp.get("numberValue").getAsInt());
+        assertEquals(0.1d, resp.get("decimalValue").getAsDouble(), 0);
 
-		JsonArray asJsonArray = resp.get("values").getAsJsonArray();
-		assertEquals(1, asJsonArray.get(0).getAsInt());
-		assertEquals(2, asJsonArray.get(1).getAsInt());
-		assertEquals(3, asJsonArray.get(2).getAsInt());
+        JsonArray asJsonArray = resp.get("values").getAsJsonArray();
+        assertEquals(1, asJsonArray.get(0).getAsInt());
+        assertEquals(2, asJsonArray.get(1).getAsInt());
+        assertEquals(3, asJsonArray.get(2).getAsInt());
 
-		assertTrue(resp.get("valid").getAsBoolean());
+        assertTrue(resp.get("valid").getAsBoolean());
+        assertTrue(resp.get("date").getAsString().startsWith("2013-01-09"));
 
-		entity = service.get(KeyFactory.createKey("Kind", id));
-		assertNotNull(entity);
+        entity = service.get(KeyFactory.createKey("Kind", id));
+        assertNotNull(entity);
 
-		assertTrue(entity.getProperty("numberValue") instanceof Long);
-		assertTrue(entity.getProperty("decimalValue") instanceof Double);
-		assertTrue(entity.getProperty("values") instanceof ArrayList);
-		assertTrue(entity.getProperty("valid") instanceof Boolean);
-		
-		// TODO test dates
-	}
+        assertTrue(entity.getProperty("numberValue") instanceof Long);
+        assertTrue(entity.getProperty("decimalValue") instanceof Double);
+        assertTrue(entity.getProperty("values") instanceof ArrayList);
+        assertTrue(entity.getProperty("valid") instanceof Boolean);
+        assertTrue(entity.getProperty("date") instanceof Date);
+    }
 }
