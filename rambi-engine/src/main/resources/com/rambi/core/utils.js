@@ -1,5 +1,6 @@
 importClass(java.util.Calendar);
 importClass(java.util.GregorianCalendar);
+importClass(java.util.List);
 
 var utils = {
         // JSON data type to JAVA
@@ -45,7 +46,7 @@ var utils = {
                 return value ? true : false;
             } else if (value instanceof java.util.Date) {
                 return new Date(value.getTime());
-            } else if (value instanceof ArrayList) {
+            } else if (value instanceof List) {
                 var list = [];
                 for (var i = 0; i < value.size(); i++) {
                     list.push(this.javaToJsonType(value.get(i)));

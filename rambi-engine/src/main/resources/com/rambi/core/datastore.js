@@ -2,6 +2,8 @@ importPackage(com.google.appengine.api.datastore);
 importClass(java.util.ArrayList);
 importClass(java.lang.Long);
 importClass(java.lang.Double);
+importClass(com.google.appengine.api.datastore.Query);
+importClass(com.google.appengine.api.datastore.FetchOptions);
 
 var utils = importModule('com/rambi/core/utils.js', 'utils');
 
@@ -61,6 +63,35 @@ function db() {
             } catch (e if  e.javaException instanceof com.google.appengine.api.datastore.EntityNotFoundException) {
                 return null;
             }
-        }
+        };
+
+        this.query = function(query) {
+            var q = new Query(query.kind);
+            
+            var filters = query.filters;
+
+            if (filters) {
+                for (var i in filters) {
+                    for (var j in filters[i]) {
+                        var operator;
+                        if (j == "LT") {
+                            operator = Query.FilterOperator.LESS_THAN;
+                        }
+                        // TODO other operators
+                        q.addFilter(i, operator, utils.jsonToJavaType(filters[i][j]));
+                    }
+                }
+            }
+
+            // TODO FetchBuilder add limit and offset
+            var result = service().prepare(q).asList(FetchOptions.Builder.withDefaults());
+
+            var list = [];
+            for (var i = 0; i < result.size(); i++) {
+                list.push(entityToJson(result.get(i)));
+            }
+
+            return list;
+        };
     };
 }

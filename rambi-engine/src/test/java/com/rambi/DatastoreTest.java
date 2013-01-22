@@ -28,7 +28,8 @@ import com.google.gson.JsonParser;
 import com.rambi.core.RambiScriptMachine;
 
 public class DatastoreTest {
-    private final LocalServiceTestHelper helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
+    private final LocalServiceTestHelper helper = new LocalServiceTestHelper(
+            new LocalDatastoreServiceTestConfig());
 
     private String appConfig = "com/rambi/DatastoreTestConfig.js";
 
@@ -62,7 +63,8 @@ public class DatastoreTest {
         ResponseMock responseMock = new ResponseMock();
         RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock);
 
-        DatastoreService service = DatastoreServiceFactory.getDatastoreService();
+        DatastoreService service = DatastoreServiceFactory
+                .getDatastoreService();
 
         assertEquals("5", responseMock.getOutData());
         Entity entity = service.get(KeyFactory.createKey("Kind", 5));
@@ -117,7 +119,8 @@ public class DatastoreTest {
         RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock);
 
         // Testing datatypes
-        JsonObject resp = (JsonObject) new JsonParser().parse(responseMock.getOutData());
+        JsonObject resp = (JsonObject) new JsonParser().parse(responseMock
+                .getOutData());
         assertEquals("POST - value", resp.get("value").getAsString());
         assertEquals(1, resp.get("numberValue").getAsInt());
         assertEquals(0.1d, resp.get("decimalValue").getAsDouble(), 0);
@@ -138,5 +141,88 @@ public class DatastoreTest {
         assertTrue(entity.getProperty("values") instanceof ArrayList);
         assertTrue(entity.getProperty("valid") instanceof Boolean);
         assertTrue(entity.getProperty("date") instanceof Date);
+
+        // Queries
+        createMockEntities();
+
+        // Query 1
+        // LESS THAN
+        req = new RequestMock("mock/mock", "GET") {
+
+            private Map<String, String> params = new HashMap<String, String>();
+            {
+                params.put("query1", "");
+            }
+
+            @Override
+            public String getParameter(String param) {
+                return params.get(param);
+            }
+        };
+
+        responseMock = new ResponseMock();
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock);
+
+        JsonArray result = (JsonArray) new JsonParser().parse(responseMock
+                .getOutData());
+
+        assertEquals(2, result.size());
+
+        JsonObject asJsonObject = result.get(0).getAsJsonObject();
+        assertEquals(0, asJsonObject.get("number").getAsInt());
+        asJsonObject = result.get(1).getAsJsonObject();
+        assertEquals(1, asJsonObject.get("number").getAsInt());
+
+        // Query 2
+        // LESS THAN OR EQUALS
+
+        // Query 3
+        // GREATER THAN
+
+        // Query 4
+        // GREATER THAN OR EQUALS
+
+        // Query 5
+        // EQUAL
+
+        // Query 6
+        // NOT EQUAL
+
+        // Query 7
+        // IN
+
+        // Query Builder 1
+        // LESS THAN
+
+        // Query Builder 2
+        // LESS THAN OR EQUALS
+
+        // Query Builder 3
+        // GREATER THAN
+
+        // Query Builder 4
+        // GREATER THAN OR EQUALS
+
+        // Query Builder 5
+        // EQUAL
+
+        // Query Builder 6
+        // NOT EQUAL
+
+        // Query Builder 7
+        // IN
+
+    }
+
+    private void createMockEntities() {
+        DatastoreService service = DatastoreServiceFactory
+                .getDatastoreService();
+
+        for (int i = 0; i < 3; i++) {
+            Entity e = new Entity("Mock");
+            e.setProperty("number", i);
+            e.setProperty("string", "test" + i);
+            service.put(e);
+        }
     }
 }
