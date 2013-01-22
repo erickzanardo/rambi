@@ -25,7 +25,7 @@ function db() {
         };
 
 
-        // JAVA to JSON 
+        // JAVA to JSON
         var entityToJson = function(entity) {
             var json = {};
             var map = entity.getProperties();
@@ -55,8 +55,12 @@ function db() {
         };
 
         this.get = function(kind, identifier) {
-            var entity = service().get(createKey(kind, identifier));
-            return entityToJson(entity);
+            try {
+                var entity = service().get(createKey(kind, identifier));
+                return entityToJson(entity);
+            } catch (e if  e.javaException instanceof com.google.appengine.api.datastore.EntityNotFoundException) {
+                return null;
+            }
         }
     };
 }

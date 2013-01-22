@@ -84,6 +84,25 @@ public class DatastoreTest {
 
             private Map<String, String> params = new HashMap<String, String>();
             {
+                // nonexistent ID
+                params.put("key", "656565656565656565");
+                params.put("kind", "Kind");
+            }
+
+            @Override
+            public String getParameter(String param) {
+                return params.get(param);
+            }
+        };
+
+        responseMock = new ResponseMock();
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock);
+        assertEquals("null", responseMock.getOutData());
+
+        req = new RequestMock("mock/mock", "GET") {
+
+            private Map<String, String> params = new HashMap<String, String>();
+            {
                 params.put("key", String.valueOf(id));
                 params.put("kind", "Kind");
             }
