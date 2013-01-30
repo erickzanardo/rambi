@@ -76,8 +76,19 @@ function db() {
                         var operator;
                         if (j == "LT") {
                             operator = Query.FilterOperator.LESS_THAN;
-                        }
-                        // TODO other operators
+                        } else if (j == "LT_EQ") {
+                            operator = Query.FilterOperator.LESS_THAN_OR_EQUAL;
+                        } else if (j == "GT") {
+                            operator = Query.FilterOperator.GREATER_THAN;
+                        } else if (j == "GT_EQ") {
+                            operator = Query.FilterOperator.GREATER_THAN_OR_EQUAL;
+                        } else if (j == "EQ") {
+                            operator = Query.FilterOperator.EQUAL;
+                        } else if (j == "NOT_EQ") {
+                            operator = Query.FilterOperator.NOT_EQUAL;
+                        } else if (j == "IN") {
+                            operator = Query.FilterOperator.IN;
+                        } 
                         q.addFilter(i, operator, utils.jsonToJavaType(filters[i][j]));
                     }
                 }

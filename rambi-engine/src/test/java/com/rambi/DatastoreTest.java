@@ -143,22 +143,11 @@ public class DatastoreTest {
         assertTrue(entity.getProperty("date") instanceof Date);
 
         // Queries
-        createMockEntities();
+        createQueryMockEntities();
 
         // Query 1
         // LESS THAN
-        req = new RequestMock("mock/mock", "GET") {
-
-            private Map<String, String> params = new HashMap<String, String>();
-            {
-                params.put("query1", "");
-            }
-
-            @Override
-            public String getParameter(String param) {
-                return params.get(param);
-            }
-        };
+        req = createQueryMockRequest("query1");
 
         responseMock = new ResponseMock();
         RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock);
@@ -175,21 +164,107 @@ public class DatastoreTest {
 
         // Query 2
         // LESS THAN OR EQUALS
+        req = createQueryMockRequest("query2");
+
+        responseMock = new ResponseMock();
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock);
+
+        result = (JsonArray) new JsonParser().parse(responseMock
+                .getOutData());
+
+        assertEquals(3, result.size());
+
+        asJsonObject = result.get(0).getAsJsonObject();
+        assertEquals(0, asJsonObject.get("number").getAsInt());
+        asJsonObject = result.get(1).getAsJsonObject();
+        assertEquals(1, asJsonObject.get("number").getAsInt());
+        asJsonObject = result.get(2).getAsJsonObject();
+        assertEquals(2, asJsonObject.get("number").getAsInt());
 
         // Query 3
         // GREATER THAN
+        req = createQueryMockRequest("query3");
+
+        responseMock = new ResponseMock();
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock);
+
+        result = (JsonArray) new JsonParser().parse(responseMock
+                .getOutData());
+
+        assertEquals(2, result.size());
+
+        asJsonObject = result.get(0).getAsJsonObject();
+        assertEquals(1, asJsonObject.get("number").getAsInt());
+        asJsonObject = result.get(1).getAsJsonObject();
+        assertEquals(2, asJsonObject.get("number").getAsInt());
 
         // Query 4
         // GREATER THAN OR EQUALS
+        req = createQueryMockRequest("query4");
+
+        responseMock = new ResponseMock();
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock);
+
+        result = (JsonArray) new JsonParser().parse(responseMock
+                .getOutData());
+
+        assertEquals(3, result.size());
+
+        asJsonObject = result.get(0).getAsJsonObject();
+        assertEquals(0, asJsonObject.get("number").getAsInt());
+        asJsonObject = result.get(1).getAsJsonObject();
+        assertEquals(1, asJsonObject.get("number").getAsInt());
+        asJsonObject = result.get(2).getAsJsonObject();
+        assertEquals(2, asJsonObject.get("number").getAsInt());
 
         // Query 5
         // EQUAL
+        req = createQueryMockRequest("query5");
+
+        responseMock = new ResponseMock();
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock);
+
+        result = (JsonArray) new JsonParser().parse(responseMock
+                .getOutData());
+
+        assertEquals(1, result.size());
+
+        asJsonObject = result.get(0).getAsJsonObject();
+        assertEquals(0, asJsonObject.get("number").getAsInt());
 
         // Query 6
         // NOT EQUAL
+        req = createQueryMockRequest("query6");
+
+        responseMock = new ResponseMock();
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock);
+
+        result = (JsonArray) new JsonParser().parse(responseMock
+                .getOutData());
+
+        assertEquals(2, result.size());
+
+        asJsonObject = result.get(0).getAsJsonObject();
+        assertEquals(0, asJsonObject.get("number").getAsInt());
+        asJsonObject = result.get(1).getAsJsonObject();
+        assertEquals(2, asJsonObject.get("number").getAsInt());
 
         // Query 7
         // IN
+        req = createQueryMockRequest("query7");
+
+        responseMock = new ResponseMock();
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock);
+
+        result = (JsonArray) new JsonParser().parse(responseMock
+                .getOutData());
+
+        assertEquals(2, result.size());
+
+        asJsonObject = result.get(0).getAsJsonObject();
+        assertEquals(0, asJsonObject.get("number").getAsInt());
+        asJsonObject = result.get(1).getAsJsonObject();
+        assertEquals(1, asJsonObject.get("number").getAsInt());
 
         // Query Builder 1
         // LESS THAN
@@ -214,7 +289,22 @@ public class DatastoreTest {
 
     }
 
-    private void createMockEntities() {
+    private RequestMock createQueryMockRequest(final String param) {
+        return new RequestMock("mock/mock", "GET") {
+
+            private Map<String, String> params = new HashMap<String, String>();
+            {
+                params.put(param, "");
+            }
+
+            @Override
+            public String getParameter(String param) {
+                return params.get(param);
+            }
+        };
+    }
+
+    private void createQueryMockEntities() {
         DatastoreService service = DatastoreServiceFactory
                 .getDatastoreService();
 

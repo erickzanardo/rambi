@@ -7,8 +7,8 @@ var service = {
             var key = parseInt(req.param("key"));
             var data = db().get(kind, key);
             resp.print(JSON.stringify(data));
-            // LESS THAN
         } else if (req.param("query1")) {
+            // LESS THAN
             var query = {
                 kind : "Mock",
                 filters : {
@@ -17,14 +17,73 @@ var service = {
                     }
                 }
             };
-
             resp.print(JSON.stringify(db().query(query)));
         } else if (req.param("query2")) {
+            // LESS THAN OR EQUALS
+            var query = {
+                kind : "Mock",
+                filters : {
+                    number : {
+                        LT_EQ : 2
+                    }
+                }
+            };
+            resp.print(JSON.stringify(db().query(query)));
         } else if (req.param("query3")) {
+            // GREATER THAN
+            var query = {
+                kind : "Mock",
+                filters : {
+                    number : {
+                        GT : 0
+                    }
+                }
+            };
+            resp.print(JSON.stringify(db().query(query)));
         } else if (req.param("query4")) {
+            // GREATER THAN OR EQUALS
+            var query = {
+                kind : "Mock",
+                filters : {
+                    number : {
+                        GT_EQ : 0
+                    }
+                }
+            };
+            resp.print(JSON.stringify(db().query(query)));
         } else if (req.param("query5")) {
+            // EQUAL
+            var query = {
+                kind : "Mock",
+                filters : {
+                    number : {
+                        EQ : 0
+                    }
+                }
+            };
+            resp.print(JSON.stringify(db().query(query)));
         } else if (req.param("query6")) {
+            // NOT EQUAL
+            var query = {
+                kind : "Mock",
+                filters : {
+                    number : {
+                        NOT_EQ : 1
+                    }
+                }
+            };
+            resp.print(JSON.stringify(db().query(query)));
         } else if (req.param("query7")) {
+            // IN
+            var query = {
+                kind : "Mock",
+                filters : {
+                    number : {
+                        IN : [ 0, 1 ]
+                    }
+                }
+            };
+            resp.print(JSON.stringify(db().query(query)));
         } else if (req.param("query_builder1")) {
         } else if (req.param("query_builder2")) {
         } else if (req.param("query_builder3")) {
