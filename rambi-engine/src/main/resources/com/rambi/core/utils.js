@@ -13,11 +13,11 @@ var utils = {
                 }
             } else if (v instanceof Date) {
                 var calendar = GregorianCalendar.getInstance();
-                calendar.set(Calendar.DATE, v.getDate());
+                calendar.set(Calendar.DAY_OF_MONTH, v.getDate());
                 calendar.set(Calendar.MONTH, v.getMonth());
                 calendar.set(Calendar.YEAR, v.getFullYear());
 
-                calendar.set(Calendar.HOUR, v.getHours());
+                calendar.set(Calendar.HOUR_OF_DAY, v.getHours());
                 calendar.set(Calendar.MINUTE, v.getMinutes());
                 calendar.set(Calendar.SECOND, v.getSeconds());
                 calendar.set(Calendar.MILLISECOND, v.getMilliseconds());
