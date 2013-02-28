@@ -190,6 +190,43 @@ public class DatastoreTest {
         // Query 9
         assertRange(false);
         assertRange(true);
+
+        // Query 10
+        assertNoFilter(false);
+        assertNoFilter(true);
+    }
+
+    private void assertNoFilter(boolean b) {
+
+        HttpServletRequest req;
+        ResponseMock responseMock;
+        JsonArray result;
+        JsonObject asJsonObject;
+        if (b) {
+            req = createQueryMockRequest("query10");
+        } else {
+            req = createQueryMockRequest("query10", "builder");
+        }
+
+        responseMock = new ResponseMock();
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock);
+
+        result = (JsonArray) new JsonParser().parse(responseMock.getOutData());
+
+        assertEquals(3, result.size());
+
+        asJsonObject = result.get(0).getAsJsonObject();
+        assertEquals(0, asJsonObject.get("number").getAsInt());
+        assertEquals(2, asJsonObject.get("_id").getAsInt());
+
+        asJsonObject = result.get(1).getAsJsonObject();
+        assertEquals(1, asJsonObject.get("number").getAsInt());
+        assertEquals(3, asJsonObject.get("_id").getAsInt());
+
+        asJsonObject = result.get(2).getAsJsonObject();
+        assertEquals(2, asJsonObject.get("number").getAsInt());
+        assertEquals(4, asJsonObject.get("_id").getAsInt());
+    
     }
 
     private void assertRange(boolean b) {

@@ -155,6 +155,21 @@ var service = {
                 result = db().query(query);
             }
             resp.print(JSON.stringify(result));
+        } else if (req.param("query10")) {
+            // NO FILTERS
+            var result;
+
+            // BUILDER
+            if (req.param("builder")) {
+                result = db().prepareQuery("Mock").result();
+            } else {
+                var query = {
+                        kind : "Mock"
+                };
+
+                result = db().query(query);
+            }
+            resp.print(JSON.stringify(result));
         }
     },
     put : function(req, resp) {
