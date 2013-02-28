@@ -65,6 +65,65 @@ function db() {
             }
         };
 
+        this.prepareQuery = function(kind) {
+            return new function() {
+                var query = {
+                        kind: kind,
+                        filters: {}
+                };
+
+                var addFilter = function(field, value, operator) {
+                    var f = {};
+                    f[operator] = value;
+                    query.filters[field] = f;
+                };
+
+                this.result = function() {
+                    return db().query(query);
+                }
+
+                this.lt = function(field, value) {
+                    addFilter(field, value, "LT");
+                    return this;
+                };
+
+                this.ltEq = function(field, value) {
+                    addFilter(field, value, "LT_EQ");
+                    return this;
+                };
+
+                this.gt = function(field, value) {
+                    addFilter(field, value, "GT");
+                    return this;
+                };
+
+                this.gtEq = function(field, value) {
+                    addFilter(field, value, "GT_EQ");
+                    return this;
+                };
+
+                this.gtEq = function(field, value) {
+                    addFilter(field, value, "GT_EQ");
+                    return this;
+                };
+
+                this.eq = function(field, value) {
+                    addFilter(field, value, "EQ");
+                    return this;
+                };
+
+                this.notEq = function(field, value) {
+                    addFilter(field, value, "NOT_EQ");
+                    return this;
+                };
+
+                this.in = function(field, value) {
+                    addFilter(field, value, "IN");
+                    return this;
+                };
+            }
+        };
+
         this.query = function(query) {
             var q = new Query(query.kind);
             
