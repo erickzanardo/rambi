@@ -17,11 +17,7 @@ var service = {
             } else {
                 var query = {
                         kind : "Mock",
-                        filters : {
-                            number : {
-                                LT : 2
-                            }
-                        }
+                        filters : [{ number : { LT : 2 } }]
                 };
                 result = db().query(query);
             }
@@ -37,11 +33,7 @@ var service = {
             } else {
                 var query = {
                         kind : "Mock",
-                        filters : {
-                            number : {
-                                LT_EQ : 2
-                            }
-                        }
+                        filters : [{ number : { LT_EQ : 2 } }]
                 };
                 result = db().query(query);
             }
@@ -56,11 +48,7 @@ var service = {
             } else {
                 var query = {
                         kind : "Mock",
-                        filters : {
-                            number : {
-                                GT : 0
-                            }
-                        }
+                        filters : [{ number : { GT : 0 } }]
                 };
                 result = db().query(query);
             }
@@ -75,11 +63,7 @@ var service = {
             } else {
                 var query = {
                         kind : "Mock",
-                        filters : {
-                            number : {
-                                GT_EQ : 0
-                            }
-                        }
+                        filters : [{ number : { GT_EQ : 0 } }]
                 };
 
                 result = db().query(query);
@@ -95,11 +79,7 @@ var service = {
             } else {
                 var query = {
                         kind : "Mock",
-                        filters : {
-                            number : {
-                                EQ : 0
-                            }
-                        }
+                        filters : [{ number : { EQ : 0 } }]
                     };
                 
                 result = db().query(query);
@@ -115,11 +95,7 @@ var service = {
             } else {
                 var query = {
                         kind : "Mock",
-                        filters : {
-                            number : {
-                                NOT_EQ : 1
-                            }
-                        }
+                        filters : [{ number : { NOT_EQ : 1 } }]
                 };
                 
                 result = db().query(query);
@@ -135,18 +111,14 @@ var service = {
             } else {
                 var query = {
                         kind : "Mock",
-                        filters : {
-                            number : {
-                                IN : [ 0, 1 ]
-                            }
-                        }
+                        filters : [{ number : { IN : [ 0, 1 ] } }]
                 };
 
                 result = db().query(query);
             }
             resp.print(JSON.stringify(result));
         } else if (req.param("query8")) {
-            // IN
+            // MULTIPLE OPERATOR
             var result;
 
             // BUILDER
@@ -155,14 +127,29 @@ var service = {
             } else {
                 var query = {
                         kind : "Mock",
-                        filters : {
-                            number : {
-                                IN : [ 0, 1 ]
-                            },
-                            string: {
-                                EQ: "test1"
-                            }
-                        }
+                        filters : [
+                            {number : { IN : [ 0, 1 ] }},
+                            {string: { EQ: "test1" }}
+                        ]
+                };
+
+                result = db().query(query);
+            }
+            resp.print(JSON.stringify(result));
+        } else if (req.param("query9")) {
+            // MULTIPLE OPERATOR ON SAME FIELD
+            var result;
+
+            // BUILDER
+            if (req.param("builder")) {
+                result = db().prepareQuery("Mock").lt("number", 2).gt("number", 0).result();
+            } else {
+                var query = {
+                        kind : "Mock",
+                        filters : [
+                            {number : { LT : 2 }},
+                            {number : { GT : 0 }}
+                        ]
                 };
 
                 result = db().query(query);

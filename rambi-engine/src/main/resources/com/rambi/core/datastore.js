@@ -70,13 +70,14 @@ function db() {
             return new function() {
                 var query = {
                         kind: kind,
-                        filters: {}
+                        filters: []
                 };
 
                 var addFilter = function(field, value, operator) {
                     var f = {};
-                    f[operator] = value;
-                    query.filters[field] = f;
+                    f[field] = {};
+                    f[field][operator] = value;
+                    query.filters.push(f);
                 };
 
                 this.result = function() {
@@ -133,24 +134,26 @@ function db() {
 
             if (filters) {
                 for (var i in filters) {
-                    for (var j in filters[i]) {
-                        var operator;
-                        if (j == "LT") {
-                            operator = Query.FilterOperator.LESS_THAN;
-                        } else if (j == "LT_EQ") {
-                            operator = Query.FilterOperator.LESS_THAN_OR_EQUAL;
-                        } else if (j == "GT") {
-                            operator = Query.FilterOperator.GREATER_THAN;
-                        } else if (j == "GT_EQ") {
-                            operator = Query.FilterOperator.GREATER_THAN_OR_EQUAL;
-                        } else if (j == "EQ") {
-                            operator = Query.FilterOperator.EQUAL;
-                        } else if (j == "NOT_EQ") {
-                            operator = Query.FilterOperator.NOT_EQUAL;
-                        } else if (j == "IN") {
-                            operator = Query.FilterOperator.IN;
+                    for (var o in filters[i]) {
+                        for (var j in filters[i][o]) {
+                            var operator;
+                            if (j == "LT") {
+                                operator = Query.FilterOperator.LESS_THAN;
+                            } else if (j == "LT_EQ") {
+                                operator = Query.FilterOperator.LESS_THAN_OR_EQUAL;
+                            } else if (j == "GT") {
+                                operator = Query.FilterOperator.GREATER_THAN;
+                            } else if (j == "GT_EQ") {
+                                operator = Query.FilterOperator.GREATER_THAN_OR_EQUAL;
+                            } else if (j == "EQ") {
+                                operator = Query.FilterOperator.EQUAL;
+                            } else if (j == "NOT_EQ") {
+                                operator = Query.FilterOperator.NOT_EQUAL;
+                            } else if (j == "IN") {
+                                operator = Query.FilterOperator.IN;
+                            }
+                            filterList.add(new Query.FilterPredicate(o, operator, utils.jsonToJavaType(filters[i][o][j])));
                         }
-                        filterList.add(new Query.FilterPredicate(i, operator, utils.jsonToJavaType(filters[i][j])));
                     }
                 }
             }

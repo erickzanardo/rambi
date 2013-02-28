@@ -28,8 +28,7 @@ import com.google.gson.JsonParser;
 import com.rambi.core.RambiScriptMachine;
 
 public class DatastoreTest {
-    private final LocalServiceTestHelper helper = new LocalServiceTestHelper(
-            new LocalDatastoreServiceTestConfig());
+    private final LocalServiceTestHelper helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
 
     private String appConfig = "com/rambi/DatastoreTestConfig.js";
 
@@ -63,8 +62,7 @@ public class DatastoreTest {
         ResponseMock responseMock = new ResponseMock();
         RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock);
 
-        DatastoreService service = DatastoreServiceFactory
-                .getDatastoreService();
+        DatastoreService service = DatastoreServiceFactory.getDatastoreService();
 
         assertEquals("5", responseMock.getOutData());
         Entity entity = service.get(KeyFactory.createKey("Kind", 5));
@@ -119,8 +117,7 @@ public class DatastoreTest {
         RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock);
 
         // Testing datatypes
-        JsonObject resp = (JsonObject) new JsonParser().parse(responseMock
-                .getOutData());
+        JsonObject resp = (JsonObject) new JsonParser().parse(responseMock.getOutData());
         assertEquals("POST - value", resp.get("value").getAsString());
         assertEquals(1, resp.get("numberValue").getAsInt());
         assertEquals(0.1d, resp.get("decimalValue").getAsDouble(), 0);
@@ -184,6 +181,31 @@ public class DatastoreTest {
         assertMultiple(false);
         assertMultiple(true);
 
+        // Query 9
+        assertRange(false);
+        assertRange(true);
+    }
+
+    private void assertRange(boolean b) {
+        HttpServletRequest req;
+        ResponseMock responseMock;
+        JsonArray result;
+        JsonObject asJsonObject;
+        if (b) {
+            req = createQueryMockRequest("query9");
+        } else {
+            req = createQueryMockRequest("query9", "builder");
+        }
+
+        responseMock = new ResponseMock();
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock);
+
+        result = (JsonArray) new JsonParser().parse(responseMock.getOutData());
+
+        assertEquals(1, result.size());
+
+        asJsonObject = result.get(0).getAsJsonObject();
+        assertEquals(1, asJsonObject.get("number").getAsInt());
     }
 
     private void assertMultiple(boolean b) {
@@ -200,8 +222,7 @@ public class DatastoreTest {
         responseMock = new ResponseMock();
         RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock);
 
-        result = (JsonArray) new JsonParser().parse(responseMock
-                .getOutData());
+        result = (JsonArray) new JsonParser().parse(responseMock.getOutData());
 
         assertEquals(1, result.size());
 
@@ -223,8 +244,7 @@ public class DatastoreTest {
         responseMock = new ResponseMock();
         RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock);
 
-        result = (JsonArray) new JsonParser().parse(responseMock
-                .getOutData());
+        result = (JsonArray) new JsonParser().parse(responseMock.getOutData());
 
         assertEquals(2, result.size());
 
@@ -248,8 +268,7 @@ public class DatastoreTest {
         responseMock = new ResponseMock();
         RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock);
 
-        result = (JsonArray) new JsonParser().parse(responseMock
-                .getOutData());
+        result = (JsonArray) new JsonParser().parse(responseMock.getOutData());
 
         assertEquals(2, result.size());
 
@@ -273,8 +292,7 @@ public class DatastoreTest {
         responseMock = new ResponseMock();
         RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock);
 
-        result = (JsonArray) new JsonParser().parse(responseMock
-                .getOutData());
+        result = (JsonArray) new JsonParser().parse(responseMock.getOutData());
 
         assertEquals(1, result.size());
 
@@ -296,8 +314,7 @@ public class DatastoreTest {
         responseMock = new ResponseMock();
         RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock);
 
-        result = (JsonArray) new JsonParser().parse(responseMock
-                .getOutData());
+        result = (JsonArray) new JsonParser().parse(responseMock.getOutData());
 
         assertEquals(3, result.size());
 
@@ -323,8 +340,7 @@ public class DatastoreTest {
         responseMock = new ResponseMock();
         RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock);
 
-        result = (JsonArray) new JsonParser().parse(responseMock
-                .getOutData());
+        result = (JsonArray) new JsonParser().parse(responseMock.getOutData());
 
         assertEquals(2, result.size());
 
@@ -348,8 +364,7 @@ public class DatastoreTest {
         responseMock = new ResponseMock();
         RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock);
 
-        result = (JsonArray) new JsonParser().parse(responseMock
-                .getOutData());
+        result = (JsonArray) new JsonParser().parse(responseMock.getOutData());
 
         assertEquals(3, result.size());
 
@@ -374,8 +389,7 @@ public class DatastoreTest {
         responseMock = new ResponseMock();
         RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock);
 
-        JsonArray result = (JsonArray) new JsonParser().parse(responseMock
-                .getOutData());
+        JsonArray result = (JsonArray) new JsonParser().parse(responseMock.getOutData());
 
         assertEquals(2, result.size());
 
@@ -385,7 +399,7 @@ public class DatastoreTest {
         assertEquals(1, asJsonObject.get("number").getAsInt());
     }
 
-    private RequestMock createQueryMockRequest(final String ... param) {
+    private RequestMock createQueryMockRequest(final String... param) {
         return new RequestMock("mock/mock", "GET") {
 
             private Map<String, String> params = new HashMap<String, String>();
@@ -403,8 +417,7 @@ public class DatastoreTest {
     }
 
     private void createQueryMockEntities() {
-        DatastoreService service = DatastoreServiceFactory
-                .getDatastoreService();
+        DatastoreService service = DatastoreServiceFactory.getDatastoreService();
 
         for (int i = 0; i < 3; i++) {
             Entity e = new Entity("Mock");
