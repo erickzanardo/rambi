@@ -20,6 +20,7 @@ function db() {
 
         // JSON to JAVA
         var jsonToEntity = function(json, entity) {
+            delete json._id;
             for ( var i in json) {
                 var v = json[i];
                 entity.setProperty(i, utils.jsonToJavaType(v));
@@ -38,6 +39,10 @@ function db() {
                 var key = keys[i];
                 var value = map.get(key);
                 json[key] = utils.javaToJsonType(value);
+            }
+
+            if (entity.getKey() != null) {
+                json._id = entity.getKey().getId();
             }
 
             return json;

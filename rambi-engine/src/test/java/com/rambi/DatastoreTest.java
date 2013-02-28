@@ -2,6 +2,7 @@ package com.rambi;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -116,11 +117,15 @@ public class DatastoreTest {
         responseMock = new ResponseMock();
         RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock);
 
-        // Testing datatypes
+        // Testing datatypes and embed _id
         JsonObject resp = (JsonObject) new JsonParser().parse(responseMock.getOutData());
         assertEquals("POST - value", resp.get("value").getAsString());
         assertEquals(1, resp.get("numberValue").getAsInt());
         assertEquals(0.1d, resp.get("decimalValue").getAsDouble(), 0);
+
+        // embed id
+        assertNotNull(resp.get("_id"));
+        assertEquals(id, resp.get("_id").getAsLong());
 
         JsonArray asJsonArray = resp.get("values").getAsJsonArray();
         assertEquals(1, asJsonArray.get(0).getAsInt());
@@ -133,6 +138,7 @@ public class DatastoreTest {
         entity = service.get(KeyFactory.createKey("Kind", id));
         assertNotNull(entity);
 
+        assertNull(entity.getProperty("_id"));
         assertTrue(entity.getProperty("numberValue") instanceof Long);
         assertTrue(entity.getProperty("decimalValue") instanceof Double);
         assertTrue(entity.getProperty("values") instanceof ArrayList);
