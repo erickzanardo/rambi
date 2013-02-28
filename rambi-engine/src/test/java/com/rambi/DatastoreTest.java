@@ -46,31 +46,73 @@ public class DatastoreTest {
 
     @Test
     public void testDatastore() throws EntityNotFoundException {
-        // PUT
-        HttpServletRequest req = new RequestMock("mock/mock", "PUT") {
-
-            private Map<String, String> params = new HashMap<String, String>();
-            {
-                params.put("key", "5");
-            }
-
-            @Override
-            public String getParameter(String param) {
-                return params.get(param);
-            }
-        };
-
-        ResponseMock responseMock = new ResponseMock();
-        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock);
-
         DatastoreService service = DatastoreServiceFactory.getDatastoreService();
 
-        assertEquals("5", responseMock.getOutData());
-        Entity entity = service.get(KeyFactory.createKey("Kind", 5));
-        assertEquals("PUT - value", entity.getProperty("value"));
-        assertNotNull(entity);
+        // PUT
+        assertPut(service);
 
         // POST
+        final long id = assertPost(service);
+
+        // GET
+        assertGet(service, id);
+
+        // Queries
+        createQueryMockEntities();
+
+        // Query 1
+        // LESS THAN
+        assertLessThan(false);
+        assertLessThan(true);
+
+        // Query 2
+        // LESS THAN OR EQUALS
+        assertLessThanOrEquals(false);
+        assertLessThanOrEquals(true);
+
+        // Query 3
+        // GREATER THAN
+        assertGreatThan(false);
+        assertGreatThan(true);
+
+        // Query 4
+        // GREATER THAN OR EQUALS
+        assertGreaterOtEqualsThan(false);
+        assertGreaterOtEqualsThan(true);
+
+        // Query 5
+        // EQUAL
+        assertEqual(false);
+        assertEqual(true);
+
+        // Query 6
+        // NOT EQUAL
+        assertNotEqual(false);
+        assertNotEqual(true);
+
+        // Query 7
+        // IN
+        assertIn(false);
+        assertIn(true);
+
+        // Query 8
+        assertMultiple(false);
+        assertMultiple(true);
+
+        // Query 9
+        assertRange(false);
+        assertRange(true);
+
+        // Query 10
+        assertNoFilter(false);
+        assertNoFilter(true);
+    }
+
+    private long assertPost(DatastoreService service)
+            throws EntityNotFoundException {
+        HttpServletRequest req;
+        ResponseMock responseMock;
+        Entity entity;
         req = new RequestMock("mock/mock", "POST");
         responseMock = new ResponseMock();
         RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock);
@@ -79,8 +121,14 @@ public class DatastoreTest {
         entity = service.get(KeyFactory.createKey("Kind", id));
         assertNotNull(entity);
         assertEquals("POST - value", entity.getProperty("value"));
+        return id;
+    }
 
-        // GET
+    private void assertGet(DatastoreService service, final long id)
+            throws EntityNotFoundException {
+        HttpServletRequest req;
+        ResponseMock responseMock;
+        Entity entity;
         req = new RequestMock("mock/mock", "GET") {
 
             private Map<String, String> params = new HashMap<String, String>();
@@ -144,56 +192,54 @@ public class DatastoreTest {
         assertTrue(entity.getProperty("values") instanceof ArrayList);
         assertTrue(entity.getProperty("valid") instanceof Boolean);
         assertTrue(entity.getProperty("date") instanceof Date);
+    }
 
-        // Queries
-        createQueryMockEntities();
+    private void assertPut(DatastoreService service)
+            throws EntityNotFoundException {
+        HttpServletRequest req = new RequestMock("mock/mock", "PUT") {
 
-        // Query 1
-        // LESS THAN
-        assertLessThan(false);
-        assertLessThan(true);
+            private Map<String, String> params = new HashMap<String, String>();
+            {
+                params.put("key", "5");
+            }
 
-        // Query 2
-        // LESS THAN OR EQUALS
-        assertLessThanOrEquals(false);
-        assertLessThanOrEquals(true);
+            @Override
+            public String getParameter(String param) {
+                return params.get(param);
+            }
+        };
 
-        // Query 3
-        // GREATER THAN
-        assertGreatThan(false);
-        assertGreatThan(true);
+        ResponseMock responseMock = new ResponseMock();
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock);
 
-        // Query 4
-        // GREATER THAN OR EQUALS
-        assertGreaterOtEqualsThan(false);
-        assertGreaterOtEqualsThan(true);
+        final JsonObject obj = (JsonObject) new JsonParser().parse(responseMock.getOutData());
 
-        // Query 5
-        // EQUAL
-        assertEqual(false);
-        assertEqual(true);
+        assertEquals(5, obj.get("_id").getAsLong());
 
-        // Query 6
-        // NOT EQUAL
-        assertNotEqual(false);
-        assertNotEqual(true);
+        Entity entity = service.get(KeyFactory.createKey("Kind", 5));
+        assertNotNull(entity);
+        assertEquals("PUT - value", entity.getProperty("value"));
 
-        // Query 7
-        // IN
-        assertIn(false);
-        assertIn(true);
+        // Updated
+        req = new RequestMock("mock/mock", "PUT") {
 
-        // Query 8
-        assertMultiple(false);
-        assertMultiple(true);
+            private Map<String, String> params = new HashMap<String, String>();
+            {
+                params.put("data", obj.toString());
+            }
 
-        // Query 9
-        assertRange(false);
-        assertRange(true);
+            @Override
+            public String getParameter(String param) {
+                return params.get(param);
+            }
+        };
 
-        // Query 10
-        assertNoFilter(false);
-        assertNoFilter(true);
+        responseMock = new ResponseMock();
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock);
+
+        entity = service.get(KeyFactory.createKey("Kind", 5));
+        assertNotNull(entity);
+        assertEquals("PUT - value updated", entity.getProperty("value"));
     }
 
     private void assertNoFilter(boolean b) {

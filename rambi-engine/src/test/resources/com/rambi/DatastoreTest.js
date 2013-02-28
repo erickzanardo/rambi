@@ -173,14 +173,22 @@ var service = {
         }
     },
     put : function(req, resp) {
-        var key = parseInt(req.param("key"));
+        if (req.param("key")) {
+            var key = parseInt(req.param("key"));
+            
+            var data = {
+                    value : "PUT - value"
+            };
+            var key = db().put("Kind", data, key);
+            data._id = key;
+            resp.print(JSON.stringify(data));
 
-        var data = {
-            value : "PUT - value"
-        };
-        var key = db().put("Kind", data, key);
-        resp.print(key);
+        } else if(req.param("data")) {
+            var data = JSON.parse(req.param("data"));
+            data.value = "PUT - value updated"
 
+            db().put("Kind", data, data._id);
+        }
     },
     post : function(req, resp) {
 
