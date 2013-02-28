@@ -5,6 +5,7 @@ importClass(java.lang.Double);
 importClass(com.google.appengine.api.datastore.Query);
 importClass(com.google.appengine.api.datastore.FetchOptions);
 
+
 var utils = importModule('com/rambi/core/utils.js', 'utils');
 
 function db() {
@@ -128,6 +129,7 @@ function db() {
             var q = new Query(query.kind);
             
             var filters = query.filters;
+            var filterList = new ArrayList();
 
             if (filters) {
                 for (var i in filters) {
@@ -147,10 +149,16 @@ function db() {
                             operator = Query.FilterOperator.NOT_EQUAL;
                         } else if (j == "IN") {
                             operator = Query.FilterOperator.IN;
-                        } 
-                        q.addFilter(i, operator, utils.jsonToJavaType(filters[i][j]));
+                        }
+                        filterList.add(new Query.FilterPredicate(i, operator, utils.jsonToJavaType(filters[i][j])));
                     }
                 }
+            }
+
+            if (filterList.size() > 1) {
+                q.setFilter(new Query.CompositeFilter(Query.CompositeFilterOperator.AND, filterList));
+            } else if (filterList.size() > 0) {
+                q.setFilter(filterList.get(0));
             }
 
             // TODO FetchBuilder add limit and offset

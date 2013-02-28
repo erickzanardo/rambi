@@ -145,6 +145,29 @@ var service = {
                 result = db().query(query);
             }
             resp.print(JSON.stringify(result));
+        } else if (req.param("query8")) {
+            // IN
+            var result;
+
+            // BUILDER
+            if (req.param("builder")) {
+                result = db().prepareQuery("Mock").in("number", [0, 1]).eq("string", "test1").result();
+            } else {
+                var query = {
+                        kind : "Mock",
+                        filters : {
+                            number : {
+                                IN : [ 0, 1 ]
+                            },
+                            string: {
+                                EQ: "test1"
+                            }
+                        }
+                };
+
+                result = db().query(query);
+            }
+            resp.print(JSON.stringify(result));
         }
     },
     put : function(req, resp) {

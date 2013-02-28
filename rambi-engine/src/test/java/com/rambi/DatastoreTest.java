@@ -179,6 +179,34 @@ public class DatastoreTest {
         // IN
         assertIn(false);
         assertIn(true);
+
+        // Query 8
+        assertMultiple(false);
+        assertMultiple(true);
+
+    }
+
+    private void assertMultiple(boolean b) {
+        HttpServletRequest req;
+        ResponseMock responseMock;
+        JsonArray result;
+        JsonObject asJsonObject;
+        if (b) {
+            req = createQueryMockRequest("query8");
+        } else {
+            req = createQueryMockRequest("query8", "builder");
+        }
+
+        responseMock = new ResponseMock();
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock);
+
+        result = (JsonArray) new JsonParser().parse(responseMock
+                .getOutData());
+
+        assertEquals(1, result.size());
+
+        asJsonObject = result.get(0).getAsJsonObject();
+        assertEquals(1, asJsonObject.get("number").getAsInt());
     }
 
     private void assertIn(boolean b) {
