@@ -96,6 +96,16 @@ function db() {
                     return db().query(query);
                 }
 
+                this.limit = function(l) {
+                    query.limit = l;
+                    return this;
+                };
+
+                this.offset = function(o) {
+                    query.offset = o;
+                    return this;
+                };
+
                 this.desc = function(field) {
                     addSort(field, "DESC");
                     return this;
@@ -206,8 +216,17 @@ function db() {
                 q.setFilter(filterList.get(0));
             }
 
-            // TODO FetchBuilder add limit and offset
-            var result = service().prepare(q).asList(FetchOptions.Builder.withDefaults());
+            var fetchOptions = FetchOptions.Builder.withDefaults();
+
+            if (query.hasOwnProperty("offset")) {
+                fetchOptions.offset(query.offset);
+            }
+
+            if (query.hasOwnProperty("limit")) {
+                fetchOptions.limit(query.limit);
+            }
+
+            var result = service().prepare(q).asList(fetchOptions);
 
             var list = [];
             for (var i = 0; i < result.size(); i++) {

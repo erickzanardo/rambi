@@ -118,6 +118,33 @@ public class DatastoreTest {
         assertSort(false);
         assertSort(true);
 
+        // Query 12
+        // OFFSET and LIMIT
+        assertLimitOffset(false);
+        assertLimitOffset(true);
+
+    }
+
+    private void assertLimitOffset(boolean b) {
+        HttpServletRequest req;
+        ResponseMock responseMock;
+        JsonArray result;
+        JsonObject asJsonObject;
+        if (b) {
+            req = createQueryMockRequest("query12");
+        } else {
+            req = createQueryMockRequest("query12", "builder");
+        }
+
+        responseMock = new ResponseMock();
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock);
+
+        result = (JsonArray) new JsonParser().parse(responseMock.getOutData());
+
+        assertEquals(1, result.size());
+
+        asJsonObject = result.get(0).getAsJsonObject();
+        assertEquals(2, asJsonObject.get("number").getAsInt());
     }
 
     private void assertSort(boolean b) {

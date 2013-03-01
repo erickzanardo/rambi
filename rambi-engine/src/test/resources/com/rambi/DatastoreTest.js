@@ -192,6 +192,26 @@ var service = {
                 result = db().query(query);
             }
             resp.print(JSON.stringify(result));
+        } else if (req.param("query12")) {
+            // SORT
+            var result;
+
+            // BUILDER
+            if (req.param("builder")) {
+                result = db().prepareQuery("Mock2").asc("number").limit(1).offset(2).result();
+            } else {
+                var query = {
+                        kind : "Mock2",
+                        limit: 1,
+                        offset: 2,
+                        sort: [
+                               {number: "ASC"}
+                        ]
+                };
+
+                result = db().query(query);
+            }
+            resp.print(JSON.stringify(result));
         }
     },
     put : function(req, resp) {
