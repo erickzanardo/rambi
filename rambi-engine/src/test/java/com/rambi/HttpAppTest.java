@@ -4,18 +4,12 @@ import static org.junit.Assert.assertEquals;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import com.rambi.core.RambiScriptMachine;
 
 public class HttpAppTest {
-    private String appConfig = "com/rambi/HttpAppTestConfig.js";
-
-    @Before
-    public void init() {
-        RambiScriptMachine.getInstance().init(appConfig);
-    }
+    private String serviceFile = "com/rambi/HttpAppTest.js";
 
     @Test
     public void testHttpRequest() {
@@ -27,10 +21,9 @@ public class HttpAppTest {
         };
 
         ResponseMock responseMock = new ResponseMock();
-        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock);
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock, serviceFile);
 
-        assertEquals("param - Mock Valueparam - Mock Value\na a",
-                responseMock.getOutData());
+        assertEquals("param - Mock Valueparam - Mock Value\na a", responseMock.getOutData());
     }
 
     @Test(expected = UnsupportedOperationException.class)
@@ -38,7 +31,7 @@ public class HttpAppTest {
         HttpServletRequest req = new RequestMock("mock/mock", "DELETE");
 
         ResponseMock responseMock = new ResponseMock();
-        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock);
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock, serviceFile);
     }
 
 }

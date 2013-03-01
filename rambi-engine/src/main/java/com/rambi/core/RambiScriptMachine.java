@@ -15,21 +15,12 @@ import org.mozilla.javascript.Script;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
 public class RambiScriptMachine {
     public static RambiScriptMachine instance;
 
-    private JsonParser parser = new JsonParser();
-    private JsonArray config;
     private ScriptableObject global;
 
-    public void init(String appConfig) {
-        config = parser.parse(readFile(appConfig)).getAsJsonArray();
-
+    private RambiScriptMachine() {
         Context cx = Context.enter();
 
         global = new ImporterTopLevel(cx);
@@ -46,9 +37,6 @@ public class RambiScriptMachine {
         Context.exit();
     }
 
-    private RambiScriptMachine() {
-    }
-
     public static RambiScriptMachine getInstance() {
         if (instance == null) {
             instance = new RambiScriptMachine();
@@ -57,19 +45,7 @@ public class RambiScriptMachine {
     }
 
     public void executeHttpRequest(HttpServletRequest req,
-            HttpServletResponse resp) {
-
-        String uri = req.getRequestURI();
-        String service = null;
-
-        for (JsonElement e : config) {
-            JsonObject o = (JsonObject) e;
-            String pattern = o.get("pattern").getAsString();
-
-            if (uri.matches(pattern)) {
-                service = o.get("service").getAsString();
-            }
-        }
+            HttpServletResponse resp, String service) {
 
         if (service != null) {
             Context cx = Context.enter();
