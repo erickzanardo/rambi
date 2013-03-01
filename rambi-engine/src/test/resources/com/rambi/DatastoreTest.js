@@ -170,6 +170,28 @@ var service = {
                 result = db().query(query);
             }
             resp.print(JSON.stringify(result));
+        } else if (req.param("query11")) {
+            // SORT
+            var result;
+
+            // BUILDER
+            if (req.param("builder")) {
+                result = db().prepareQuery("Mock2").gtEq("number2", 0).asc("number2").desc("number").result();
+            } else {
+                var query = {
+                        kind : "Mock2",
+                        filters: [
+                               {number2: {GT_EQ: 0}}
+                        ],
+                        sort: [
+                               {number2: "ASC"},
+                               {number: "DESC"}
+                        ]
+                };
+
+                result = db().query(query);
+            }
+            resp.print(JSON.stringify(result));
         }
     },
     put : function(req, resp) {

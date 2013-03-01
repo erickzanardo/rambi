@@ -75,7 +75,8 @@ function db() {
             return new function() {
                 var query = {
                         kind: kind,
-                        filters: []
+                        filters: [],
+                        sort: []
                 };
 
                 var addFilter = function(field, value, operator) {
@@ -85,9 +86,25 @@ function db() {
                     query.filters.push(f);
                 };
 
+                var addSort = function(field, direction) {
+                    var s = {};
+                    s[field] = direction;
+                    query.sort.push(s);
+                };
+
                 this.result = function() {
                     return db().query(query);
                 }
+
+                this.desc = function(field) {
+                    addSort(field, "DESC");
+                    return this;
+                };
+
+                this.asc = function(field) {
+                    addSort(field, "ASC");
+                    return this;
+                };
 
                 this.lt = function(field, value) {
                     addFilter(field, value, "LT");
@@ -138,7 +155,7 @@ function db() {
             var filterList = new ArrayList();
 
             if (filters) {
-                for (var i in filters) {
+                for (var i = 0; i < filters.length; i++) {
                     for (var o in filters[i]) {
                         for (var j in filters[i][o]) {
                             var operator;
@@ -158,6 +175,26 @@ function db() {
                                 operator = Query.FilterOperator.IN;
                             }
                             filterList.add(new Query.FilterPredicate(o, operator, utils.jsonToJavaType(filters[i][o][j])));
+                        }
+                    }
+                }
+            }
+
+            var sort = query.sort;
+            if (sort) {
+                for (var i = 0; i < sort.length; i++) {
+                    for (var j in sort[i]) {
+                        var dir;
+                        var value = sort[i][j];
+
+                        if (value == "ASC") {
+                            dir = Query.SortDirection.ASCENDING;
+                        } else if (value == "DESC") {
+                            dir = Query.SortDirection.DESCENDING;
+                        }
+
+                        if (dir) {
+                            q.addSort(j, dir);
                         }
                     }
                 }
