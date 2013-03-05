@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -31,9 +32,6 @@ import com.rambi.core.RambiScriptMachine;
 public class DatastoreTest {
     private final LocalServiceTestHelper helper = new LocalServiceTestHelper(
             new LocalDatastoreServiceTestConfig());
-
-    private String serviceFile = "com/rambi/DatastoreTest.js";
-    
 
     @Before
     public void init() {
@@ -137,7 +135,8 @@ public class DatastoreTest {
         }
 
         responseMock = new ResponseMock();
-        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock, serviceFile);
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock,
+                getServiceFile(), "DatastoreTest");
 
         result = (JsonArray) new JsonParser().parse(responseMock.getOutData());
 
@@ -160,7 +159,8 @@ public class DatastoreTest {
         }
 
         responseMock = new ResponseMock();
-        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock, serviceFile);
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock,
+                getServiceFile(), "DatastoreTest");
 
         result = (JsonArray) new JsonParser().parse(responseMock.getOutData());
 
@@ -191,7 +191,8 @@ public class DatastoreTest {
         Entity entity;
         req = new RequestMock("mock/mock", "POST");
         responseMock = new ResponseMock();
-        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock, serviceFile);
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock,
+                getServiceFile(), "DatastoreTest");
 
         final long id = Long.parseLong(responseMock.getOutData());
         entity = service.get(KeyFactory.createKey("Kind", id));
@@ -221,7 +222,8 @@ public class DatastoreTest {
         };
 
         responseMock = new ResponseMock();
-        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock, serviceFile);
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock,
+                getServiceFile(), "DatastoreTest");
         assertEquals("null", responseMock.getOutData());
 
         req = new RequestMock("mock/mock", "GET") {
@@ -239,7 +241,8 @@ public class DatastoreTest {
         };
 
         responseMock = new ResponseMock();
-        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock, serviceFile);
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock,
+                getServiceFile(), "DatastoreTest");
 
         // Testing datatypes and embed _id
         JsonObject resp = (JsonObject) new JsonParser().parse(responseMock
@@ -287,7 +290,8 @@ public class DatastoreTest {
         };
 
         ResponseMock responseMock = new ResponseMock();
-        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock, serviceFile);
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock,
+                getServiceFile(), "DatastoreTest");
 
         final JsonObject obj = (JsonObject) new JsonParser().parse(responseMock
                 .getOutData());
@@ -313,7 +317,8 @@ public class DatastoreTest {
         };
 
         responseMock = new ResponseMock();
-        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock, serviceFile);
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock,
+                getServiceFile(), "DatastoreTest");
 
         entity = service.get(KeyFactory.createKey("Kind", 5));
         assertNotNull(entity);
@@ -333,7 +338,8 @@ public class DatastoreTest {
         }
 
         responseMock = new ResponseMock();
-        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock, serviceFile);
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock,
+                getServiceFile(), "DatastoreTest");
 
         result = (JsonArray) new JsonParser().parse(responseMock.getOutData());
 
@@ -365,7 +371,8 @@ public class DatastoreTest {
         }
 
         responseMock = new ResponseMock();
-        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock, serviceFile);
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock,
+                getServiceFile(), "DatastoreTest");
 
         result = (JsonArray) new JsonParser().parse(responseMock.getOutData());
 
@@ -387,7 +394,8 @@ public class DatastoreTest {
         }
 
         responseMock = new ResponseMock();
-        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock, serviceFile);
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock,
+                getServiceFile(), "DatastoreTest");
 
         result = (JsonArray) new JsonParser().parse(responseMock.getOutData());
 
@@ -409,7 +417,8 @@ public class DatastoreTest {
         }
 
         responseMock = new ResponseMock();
-        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock, serviceFile);
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock,
+                getServiceFile(), "DatastoreTest");
 
         result = (JsonArray) new JsonParser().parse(responseMock.getOutData());
 
@@ -433,7 +442,8 @@ public class DatastoreTest {
         }
 
         responseMock = new ResponseMock();
-        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock, serviceFile);
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock,
+                getServiceFile(), "DatastoreTest");
 
         result = (JsonArray) new JsonParser().parse(responseMock.getOutData());
 
@@ -457,7 +467,8 @@ public class DatastoreTest {
         }
 
         responseMock = new ResponseMock();
-        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock, serviceFile);
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock,
+                getServiceFile(), "DatastoreTest");
 
         result = (JsonArray) new JsonParser().parse(responseMock.getOutData());
 
@@ -479,7 +490,8 @@ public class DatastoreTest {
         }
 
         responseMock = new ResponseMock();
-        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock, serviceFile);
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock,
+                getServiceFile(), "DatastoreTest");
 
         result = (JsonArray) new JsonParser().parse(responseMock.getOutData());
 
@@ -505,7 +517,8 @@ public class DatastoreTest {
         }
 
         responseMock = new ResponseMock();
-        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock, serviceFile);
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock,
+                getServiceFile(), "DatastoreTest");
 
         result = (JsonArray) new JsonParser().parse(responseMock.getOutData());
 
@@ -529,7 +542,8 @@ public class DatastoreTest {
         }
 
         responseMock = new ResponseMock();
-        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock, serviceFile);
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock,
+                getServiceFile(), "DatastoreTest");
 
         result = (JsonArray) new JsonParser().parse(responseMock.getOutData());
 
@@ -554,7 +568,8 @@ public class DatastoreTest {
         }
 
         responseMock = new ResponseMock();
-        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock, serviceFile);
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock,
+                getServiceFile(), "DatastoreTest");
 
         JsonArray result = (JsonArray) new JsonParser().parse(responseMock
                 .getOutData());
@@ -620,5 +635,10 @@ public class DatastoreTest {
             e.setProperty("string", "test" + i);
             service.put(e);
         }
+    }
+
+    public InputStream getServiceFile() {
+        return DatastoreTest.class.getClassLoader().getResourceAsStream(
+                "com/rambi/DatastoreTest.js");
     }
 }

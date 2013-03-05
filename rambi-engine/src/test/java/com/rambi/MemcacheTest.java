@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,7 +20,6 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.rambi.core.RambiScriptMachine;
 
 public class MemcacheTest {
-    private String serviceFile = "com/rambi/MemcacheTest.js";
 
     private final LocalServiceTestHelper helper = new LocalServiceTestHelper(
             new LocalMemcacheServiceTestConfig());
@@ -42,7 +42,8 @@ public class MemcacheTest {
 
         RequestMock req = createMockRequest("PUT", paramsMap);
         ResponseMock responseMock = new ResponseMock();
-        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock, serviceFile);
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock,
+                getServiceFile(), "MemcacheTest");
 
         MemcacheService cache = MemcacheServiceFactory.getMemcacheService();
         assertNotNull(cache.get("value"));
@@ -52,7 +53,8 @@ public class MemcacheTest {
         // GET on cache
         req = createMockRequest("GET", new HashMap<String, String>());
         responseMock = new ResponseMock();
-        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock, serviceFile);
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock,
+                getServiceFile(), "MemcacheTest");
 
         String data = responseMock.getOutData();
         assertNotNull(data);
@@ -61,7 +63,8 @@ public class MemcacheTest {
         // DELETE on cache
         req = createMockRequest("DELETE", new HashMap<String, String>());
         responseMock = new ResponseMock();
-        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock, serviceFile);
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock,
+                getServiceFile(), "MemcacheTest");
         assertNull(cache.get("value"));
 
         // PUT on cache with expiration
@@ -71,7 +74,8 @@ public class MemcacheTest {
 
         req = createMockRequest("PUT", paramsMap);
         responseMock = new ResponseMock();
-        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock, serviceFile);
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock,
+                getServiceFile(), "MemcacheTest");
 
         cache = MemcacheServiceFactory.getMemcacheService();
 
@@ -79,10 +83,10 @@ public class MemcacheTest {
         Thread.sleep(15);
         assertNull(cache.get("value"));
 
-
     }
 
-    private RequestMock createMockRequest(String method, final Map<String, String> paramsMap) {
+    private RequestMock createMockRequest(String method,
+            final Map<String, String> paramsMap) {
         return new RequestMock("mock/mock", method) {
 
             private Map<String, String> params = paramsMap;
@@ -92,6 +96,11 @@ public class MemcacheTest {
                 return params.get(param);
             }
         };
+    }
+
+    public InputStream getServiceFile() {
+        return MemcacheTest.class.getClassLoader().getResourceAsStream(
+                "com/rambi/MemcacheTest.js");
     }
 
 }

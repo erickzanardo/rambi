@@ -2,6 +2,8 @@ package com.rambi;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.InputStream;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.junit.Test;
@@ -9,7 +11,6 @@ import org.junit.Test;
 import com.rambi.core.RambiScriptMachine;
 
 public class HttpAppTest {
-    private String serviceFile = "com/rambi/HttpAppTest.js";
 
     @Test
     public void testHttpRequest() {
@@ -21,7 +22,7 @@ public class HttpAppTest {
         };
 
         ResponseMock responseMock = new ResponseMock();
-        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock, serviceFile);
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock, getServiceFile(), "HttpAppTest");
 
         assertEquals("param - Mock Valueparam - Mock Value\na a", responseMock.getOutData());
     }
@@ -31,7 +32,11 @@ public class HttpAppTest {
         HttpServletRequest req = new RequestMock("mock/mock", "DELETE");
 
         ResponseMock responseMock = new ResponseMock();
-        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock, serviceFile);
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock, getServiceFile(), "HttpAppTest");
+    }
+
+    public InputStream getServiceFile() {
+        return HttpAppTest.class.getClassLoader().getResourceAsStream("com/rambi/HttpAppTest.js");
     }
 
 }

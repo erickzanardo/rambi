@@ -16,8 +16,10 @@ public class WebAppTest {
 
     @Before
     public void setup() throws Exception {
-        server = new JettyServer(8080);
-        server.setResourceBase("src/test/resources/webapp");
+        server = new JettyServer("/", 8080);
+
+        server.setWebAppDir("src/test/resources/webapp");
+
         server.start();
     }
 
@@ -28,6 +30,11 @@ public class WebAppTest {
         JsonParser jsonParser = new JsonParser();
         JsonObject o = (JsonObject) jsonParser.parse(string);
         assertEquals("OK", o.get("status").getAsString());
+
+        assertEquals(
+                "Hello!",
+                HttpUtils
+                        .get("http://localhost:8080/services/echo.js?param=Hello!"));
     }
 
     @After

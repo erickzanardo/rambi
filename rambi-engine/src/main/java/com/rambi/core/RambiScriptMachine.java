@@ -45,13 +45,13 @@ public class RambiScriptMachine {
     }
 
     public void executeHttpRequest(HttpServletRequest req,
-            HttpServletResponse resp, String service) {
+            HttpServletResponse resp, InputStream jsStream, String service) {
 
-        if (service != null) {
+        if (jsStream != null) {
             Context cx = Context.enter();
             String method = req.getMethod().toLowerCase();
 
-            String serviceScript = readFile(service);
+            String serviceScript = readStream(jsStream);
 
             try {
 
@@ -104,12 +104,17 @@ public class RambiScriptMachine {
     }
 
     protected static String readFile(String file) {
+        InputStream resourceAsStream = RambiScriptMachine.class
+                .getClassLoader().getResourceAsStream(file);
+
+        return readStream(resourceAsStream);
+    }
+
+    private static String readStream(InputStream resourceAsStream) {
         BufferedReader br = null;
         StringBuilder ret = new StringBuilder();
 
         try {
-            InputStream resourceAsStream = RambiScriptMachine.class
-                    .getClassLoader().getResourceAsStream(file);
             String line;
             br = new BufferedReader(new InputStreamReader(resourceAsStream));
 
