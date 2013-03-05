@@ -49,8 +49,12 @@
 			<artifactId>appengine-api-labs</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-servlet</artifactId>
+			<groupId>org.bitumenframework.jettify</groupId>
+			<artifactId>jettify-java</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
 		</dependency>
 	</dependencies>
 </project>

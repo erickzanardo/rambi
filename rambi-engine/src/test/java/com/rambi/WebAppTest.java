@@ -1,30 +1,33 @@
 package com.rambi;
 
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.servlet.FilterMapping;
-import org.eclipse.jetty.servlet.ServletHandler;
+import static org.junit.Assert.assertEquals;
+
+import org.bitumenframework.jettify.JettyServer;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 public class WebAppTest {
 
-    private Server server;
+    private JettyServer server;
 
     @Before
     public void setup() throws Exception {
-        server = new Server(8080);
-        ServletHandler handler = new ServletHandler();
-        server.setHandler(handler);
-
-        FilterMapping filterMapping = new FilterMapping();
-        filterMapping.setFilterName("");
-        filterMapping.setPathSpec("");
-        
-        handler.addFilterMapping(filterMapping);
-
-        
+        server = new JettyServer(8080);
+        server.setResourceBase("src/test/resources/webapp");
         server.start();
-        server.join();
+    }
+
+    @Test
+    public void test() throws Exception {
+        // Check server
+        String string = HttpUtils.get("http://localhost:8080/check.json");
+        JsonParser jsonParser = new JsonParser();
+        JsonObject o = (JsonObject) jsonParser.parse(string);
+        assertEquals("OK", o.get("status").getAsString());
     }
 
     @After

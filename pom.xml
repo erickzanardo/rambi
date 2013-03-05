@@ -9,6 +9,13 @@
 		<module>rambi-engine</module>
 	</modules>
 
+	<repositories>
+		<repository>
+			<id>clojars.org</id>
+			<url>http://clojars.org/repo</url>
+		</repository>
+	</repositories>
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -60,9 +67,15 @@
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
-				<groupId>org.eclipse.jetty</groupId>
-				<artifactId>jetty-servlet</artifactId>
-				<version>9.0.0.M5</version>
+				<groupId>org.bitumenframework.jettify</groupId>
+				<artifactId>jettify-java</artifactId>
+				<version>0.2</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>commons-httpclient</groupId>
+				<artifactId>commons-httpclient</artifactId>
+				<version>3.1</version>
 				<scope>test</scope>
 			</dependency>
 		</dependencies>
