@@ -14,6 +14,33 @@ function RambiRequest(req) {
     this.param = function(key) {
         return _req.getParameter(key);
     };
+
+    /* TODO methods to include
+     * getCharacterEncoding
+     * getContentLength
+     * getContentType
+     * getLocalAddr
+     * getLocalName
+     * getLocalPort
+     * getParameterMap
+     * getParameterNames
+     * getParameterValues
+     * getProtocol
+     * getRemoteAddr
+     * getRemoteHost
+     * getRemotePort
+     * getContextPath
+     * getCookies
+     * getDateHeader
+     * getHeader
+     * getHeaderNames
+     * getHeaders
+     * getIntHeader
+     * getMethod
+     * getPathInfo
+     * getQueryString
+     * getRequestURI
+     */
 }
 
 function RambiResponse(resp) {
@@ -31,6 +58,26 @@ function RambiResponse(resp) {
         }
     }
 
+    /* TODO methods to include
+     * getCharacterEncoding
+     * getContentType
+     * setCharacterEncoding
+     * setContentType
+     * setContentLength
+     * addCookie
+     * addDateHeader
+     * addHeader
+     * addIntHeader
+     * containsHeader
+     * encodeRedirectURL
+     * encodeURL
+     * sendError
+     * sendRedirect
+     * setDateHeader
+     * setHeader
+     * setIntHeader
+     * setStatus
+     */
 }
 
 console = {
