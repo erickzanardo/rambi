@@ -35,6 +35,12 @@ public class WebAppTest {
                 "Hello!",
                 HttpUtils
                         .get("http://localhost:8080/services/echo.js?param=Hello!"));
+
+        assertEquals(
+                "Received:Hello!",
+                HttpUtils
+                        .get("http://localhost:8080/services/webModule.js?param=Hello!"));
+
     }
 
     @After

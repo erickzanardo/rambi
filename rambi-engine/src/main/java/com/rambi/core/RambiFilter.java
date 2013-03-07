@@ -36,7 +36,7 @@ public class RambiFilter implements Filter {
 
         if (inputStream != null) {
             RambiScriptMachine.getInstance().executeHttpRequest(request,
-                    response, inputStream, requestURI);
+                    response, inputStream, requestURI, servletContext);
         } else {
             chain.doFilter(request, response);
         }

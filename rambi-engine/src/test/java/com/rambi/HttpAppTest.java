@@ -22,7 +22,7 @@ public class HttpAppTest {
         };
 
         ResponseMock responseMock = new ResponseMock();
-        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock, getServiceFile(), "HttpAppTest");
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock, getServiceFile(), "HttpAppTest", null);
 
         assertEquals("param - Mock Valueparam - Mock Value\na a", responseMock.getOutData());
     }
@@ -32,7 +32,7 @@ public class HttpAppTest {
         HttpServletRequest req = new RequestMock("mock/mock", "DELETE");
 
         ResponseMock responseMock = new ResponseMock();
-        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock, getServiceFile(), "HttpAppTest");
+        RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock, getServiceFile(), "HttpAppTest", null);
     }
 
     public InputStream getServiceFile() {
