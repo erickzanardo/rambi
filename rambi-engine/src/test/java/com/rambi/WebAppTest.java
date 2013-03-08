@@ -26,21 +26,18 @@ public class WebAppTest {
     @Test
     public void test() throws Exception {
         // Check server
-        String string = HttpUtils.get("http://localhost:8080/check.json");
+        Response resp = HttpUtils.get("http://localhost:8080/check.json");
         JsonParser jsonParser = new JsonParser();
-        JsonObject o = (JsonObject) jsonParser.parse(string);
+        JsonObject o = (JsonObject) jsonParser.parse(resp.getAsString());
         assertEquals("OK", o.get("status").getAsString());
 
-        assertEquals(
-                "Hello!",
-                HttpUtils
-                        .get("http://localhost:8080/services/echo.js?param=Hello!"));
+        assertEquals("Hello!", HttpUtils.get("http://localhost:8080/services/echo.js?param=Hello!").getAsString());
 
-        assertEquals(
-                "Received:Hello!",
-                HttpUtils
-                        .get("http://localhost:8080/services/webModule.js?param=Hello!"));
+        assertEquals("Received:Hello!", HttpUtils.get("http://localhost:8080/services/webModule.js?param=Hello!")
+                .getAsString());
 
+        assertEquals(404, HttpUtils.get("http://localhost:8080/services/thisDoesNotExist.css").getStatus());
+        assertEquals(404, HttpUtils.get("http://localhost:8080/services/thisShouldNotBeHere.css").getStatus());
     }
 
     @After

@@ -6,6 +6,10 @@
 	<filter>
 		<filter-name>RambiFilter</filter-name>
 		<filter-class>com.rambi.core.RambiFilter</filter-class>
+		<init-param>
+			<param-name>FILE-PATTERN</param-name>
+			<param-value>.*[.]js</param-value>
+		</init-param>
 	</filter>
 	<filter-mapping>
 		<filter-name>RambiFilter</filter-name>
