@@ -40,43 +40,37 @@
 				<version>
 					1.7.5
 				</version>
-				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>com.google.appengine</groupId>
 				<artifactId>appengine-testing</artifactId>
 				<version>1.7.5</version>
-				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>com.google.appengine</groupId>
 				<artifactId>appengine-api-stubs</artifactId>
 				<version>1.7.5</version>
-				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>com.google.appengine</groupId>
 				<artifactId>appengine-api-labs</artifactId>
 				<version>1.7.5</version>
-				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>javax.servlet</groupId>
 				<artifactId>servlet-api</artifactId>
 				<version>2.5</version>
-				<scope>provided</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.bitumenframework.jettify</groupId>
-				<artifactId>jettify-java</artifactId>
-				<version>0.2</version>
-				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>commons-httpclient</groupId>
 				<artifactId>commons-httpclient</artifactId>
 				<version>3.1</version>
+			</dependency>
+			<dependency>
+				<groupId>com.googlecode.mycontainer</groupId>
+				<artifactId>mycontainer-gae-web</artifactId>
 				<scope>test</scope>
+				<version>1.2.56</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

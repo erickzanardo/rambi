@@ -1,7 +1,6 @@
 package com.rambi.core;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -40,12 +39,7 @@ public class RambiFilter implements Filter {
 
         ServletContext servletContext = config.getServletContext();
 
-        InputStream inputStream = servletContext.getResourceAsStream(requestURI);
-
-        if (inputStream != null) {
-            RambiScriptMachine.getInstance().executeHttpRequest(request, response, inputStream, requestURI,
-                    servletContext);
-        } else {
+        if (!RambiScriptMachine.getInstance().executeHttpRequest(request, response, servletContext)) {
             chain.doFilter(request, response);
         }
     }

@@ -4,6 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +20,9 @@ import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
 public class RambiScriptMachine {
+    public static final String RAMBI_DEVEL_PARAM = "RAMBI_DEVEL";
+    private static Map<String, Script> cache = new HashMap<String, Script>();
+
     public static RambiScriptMachine instance;
 
     private ScriptableObject global;
@@ -35,6 +41,7 @@ public class RambiScriptMachine {
 
         String services = RambiScriptMachine.readFile("com/rambi/core/service.js");
 
+        // TODO cache
         Script servicesScript = cx.compileString(services, "services.js", 1, null);
         servicesScript.exec(cx, global);
 
@@ -48,43 +55,38 @@ public class RambiScriptMachine {
         return instance;
     }
 
-    public void executeHttpRequest(HttpServletRequest req, HttpServletResponse resp, InputStream jsStream,
-            String service, ServletContext servletContext) {
-
-        if (jsStream != null) {
-            RambiScriptMachine.servletContext.set(servletContext);
-
+    public boolean executeHttpRequest(HttpServletRequest req, HttpServletResponse resp, ServletContext servletContext) {
+        String method = req.getMethod().toLowerCase();
+        RambiScriptMachine.servletContext.set(servletContext);
+        try {
             Context cx = Context.enter();
-            String method = req.getMethod().toLowerCase();
 
-            String serviceScript = readStream(jsStream);
-
-            try {
+            Script script = readAndCompileScript(req.getRequestURI(), cx, servletContext);
+            if (script != null) {
 
                 ScriptableObject scriptableObject = (ScriptableObject) cx.newObject(global);
                 scriptableObject.setParentScope(global);
 
-                // TODO cache this
-                Script script = cx.compileString(serviceScript, service, 1, null);
                 script.exec(cx, scriptableObject);
 
                 Function f = (Function) global.get("doService");
                 f.call(cx, global, scriptableObject,
                         new Object[] { scriptableObject.get("service"), req, resp, method });
-
-            } catch (Exception e) {
-                if (e.getMessage().startsWith("unsupported")) {
-                    throw new UnsupportedOperationException("Method " + method + " not allowed in this url "
-                            + req.getRequestURI());
-                } else {
-                    throw new RuntimeException(e);
-                }
-            } finally {
-                Context.exit();
-                RambiScriptMachine.servletContext.remove();
+                return true;
 
             }
+        } catch (Exception e) {
+            if (e.getMessage() != null && e.getMessage().startsWith("unsupported")) {
+                throw new UnsupportedOperationException("Method " + method + " not allowed in this url "
+                        + req.getRequestURI());
+            } else {
+                throw new RuntimeException(e);
+            }
+        } finally {
+            Context.exit();
+            RambiScriptMachine.servletContext.remove();
         }
+        return false;
     }
 
     public static ScriptableObject importModule(Context cx, Scriptable thisObj, Object[] args, Function funObj) {
@@ -150,5 +152,35 @@ public class RambiScriptMachine {
             }
         }
         return ret.toString();
+    }
+
+    public Script readAndCompileScript(String path, Context cx, Object source) {
+
+        Script script = cache.get(path);
+
+        if (script == null) {
+            InputStream stream = null;
+
+            if (source instanceof ClassLoader) {
+                stream = ((ClassLoader) source).getResourceAsStream(path);
+            } else if (source instanceof ServletContext) {
+                stream = ((ServletContext) source).getResourceAsStream(path);
+            } else {
+                throw new RuntimeException("unknown script source! " + source.getClass().getSimpleName());
+            }
+
+            String scriptFile = readStream(stream);
+
+            script = cx.compileString(scriptFile, path, 1, null);
+            if (System.getProperty(RAMBI_DEVEL_PARAM) == null) {
+                cache.put(path, script);
+            }
+        }
+
+        return script;
+    }
+
+    public Map<String, Script> getCache() {
+        return Collections.unmodifiableMap(cache);
     }
 }
