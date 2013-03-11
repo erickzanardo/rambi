@@ -12,6 +12,18 @@
 		<url-pattern>/memcache</url-pattern>
 	</servlet-mapping>
 
+	<servlet>
+		<servlet-name>
+			Datastore
+		</servlet-name>
+		<servlet-class>com.rambi.DatastoreServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>Datastore</servlet-name>
+		<url-pattern>/datastore</url-pattern>
+	</servlet-mapping>
+
 	<filter>
 		<filter-name>RambiFilter</filter-name>
 		<filter-class>com.rambi.core.RambiFilter</filter-class>
