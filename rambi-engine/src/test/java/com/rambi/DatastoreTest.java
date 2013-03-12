@@ -1,16 +1,20 @@
 package com.rambi;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import javax.naming.NamingException;
 
-import static org.junit.Assert.*;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -37,8 +41,8 @@ public class DatastoreTest {
         // // POST
         long id = assertPost();
         //
-        // // GET
-        // assertGet(service, id);
+        // GET
+        assertGet(id);
 
         // Queries
         // createQueryMockEntities();
@@ -179,79 +183,39 @@ public class DatastoreTest {
         return id;
     }
 
-    //
-    // private void assertGet(DatastoreService service, final long id)
-    // throws EntityNotFoundException {
-    // HttpServletRequest req;
-    // ResponseMock responseMock;
-    // Entity entity;
-    // req = new RequestMock("mock/mock", "GET") {
-    //
-    // private Map<String, String> params = new HashMap<String, String>();
-    // {
-    // // nonexistent ID
-    // params.put("key", "656565656565656565");
-    // params.put("kind", "Kind");
-    // }
-    //
-    // @Override
-    // public String getParameter(String param) {
-    // return params.get(param);
-    // }
-    // };
-    //
-    // responseMock = new ResponseMock();
-    // RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock,
-    // getServiceFile(), "DatastoreTest", null);
-    // assertEquals("null", responseMock.getOutData());
-    //
-    // req = new RequestMock("mock/mock", "GET") {
-    //
-    // private Map<String, String> params = new HashMap<String, String>();
-    // {
-    // params.put("key", String.valueOf(id));
-    // params.put("kind", "Kind");
-    // }
-    //
-    // @Override
-    // public String getParameter(String param) {
-    // return params.get(param);
-    // }
-    // };
-    //
-    // responseMock = new ResponseMock();
-    // RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock,
-    // getServiceFile(), "DatastoreTest", null);
-    //
-    // // Testing datatypes and embed _id
-    // JsonObject resp = (JsonObject) new JsonParser().parse(responseMock
-    // .getOutData());
-    // assertEquals("POST - value", resp.get("value").getAsString());
-    // assertEquals(1, resp.get("numberValue").getAsInt());
-    // assertEquals(0.1d, resp.get("decimalValue").getAsDouble(), 0);
-    //
-    // // embed id
-    // assertNotNull(resp.get("_id"));
-    // assertEquals(id, resp.get("_id").getAsLong());
-    //
-    // JsonArray asJsonArray = resp.get("values").getAsJsonArray();
-    // assertEquals(1, asJsonArray.get(0).getAsInt());
-    // assertEquals(2, asJsonArray.get(1).getAsInt());
-    // assertEquals(3, asJsonArray.get(2).getAsInt());
-    //
-    // assertTrue(resp.get("valid").getAsBoolean());
-    // assertTrue(resp.get("date").getAsString().startsWith("2013-01-09"));
-    //
-    // entity = service.get(KeyFactory.createKey("Kind", id));
-    // assertNotNull(entity);
-    //
-    // assertNull(entity.getProperty("_id"));
-    // assertTrue(entity.getProperty("numberValue") instanceof Long);
-    // assertTrue(entity.getProperty("decimalValue") instanceof Double);
-    // assertTrue(entity.getProperty("values") instanceof ArrayList);
-    // assertTrue(entity.getProperty("valid") instanceof Boolean);
-    // assertTrue(entity.getProperty("date") instanceof Date);
-    // }
+    private void assertGet(long id) {
+        Response response = HttpUtils
+                .get("http://localhost:8080/services/DatastoreTest.js?key=656565656565656565&kind=Kind");
+        assertEquals("null", response.getAsString());
+
+        response = HttpUtils.get("http://localhost:8080/services/DatastoreTest.js?key=" + id + "&kind=Kind");
+        JsonObject resp = (JsonObject) new JsonParser().parse(response.getAsString());
+        assertEquals("POST - value", resp.get("value").getAsString());
+        assertEquals(1, resp.get("numberValue").getAsInt());
+        assertEquals(0.1d, resp.get("decimalValue").getAsDouble(), 0);
+
+        // embed id
+        assertNotNull(resp.get("_id"));
+        assertEquals(id, resp.get("_id").getAsLong());
+
+        JsonArray asJsonArray = resp.get("values").getAsJsonArray();
+        assertEquals(1, asJsonArray.get(0).getAsInt());
+        assertEquals(2, asJsonArray.get(1).getAsInt());
+        assertEquals(3, asJsonArray.get(2).getAsInt());
+
+        assertTrue(resp.get("valid").getAsBoolean());
+        assertTrue(resp.get("date").getAsString().startsWith("2013-01-09"));
+
+        response = HttpUtils.get("http://localhost:8080/datastore?key=" + id + "&kind=Kind");
+        JsonObject dsObj = (JsonObject) new JsonParser().parse(response.getAsString());
+
+        assertNull(dsObj.get("_id"));
+        assertTrue(dsObj.get("numberValue").isJsonPrimitive());
+        assertTrue(dsObj.get("decimalValue").isJsonPrimitive());
+        assertTrue(dsObj.get("valid").isJsonPrimitive());
+        assertTrue(dsObj.get("values").isJsonArray());
+        assertTrue(dsObj.get("date").isJsonPrimitive());
+    }
 
     private void assertPut() throws UnsupportedEncodingException {
         Response response = HttpUtils.put("http://localhost:8080/services/DatastoreTest.js?key=5");
