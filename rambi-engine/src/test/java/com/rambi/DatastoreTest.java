@@ -35,7 +35,7 @@ public class DatastoreTest {
         assertPut();
 
         // // POST
-        // final long id = assertPost(service);
+        long id = assertPost();
         //
         // // GET
         // assertGet(service, id);
@@ -167,22 +167,18 @@ public class DatastoreTest {
     //
     // }
     //
-    // private long assertPost(DatastoreService service)
-    // throws EntityNotFoundException {
-    // HttpServletRequest req;
-    // ResponseMock responseMock;
-    // Entity entity;
-    // req = new RequestMock("mock/mock", "POST");
-    // responseMock = new ResponseMock();
-    // RambiScriptMachine.getInstance().executeHttpRequest(req, responseMock,
-    // getServiceFile(), "DatastoreTest", null);
-    //
-    // final long id = Long.parseLong(responseMock.getOutData());
-    // entity = service.get(KeyFactory.createKey("Kind", id));
-    // assertNotNull(entity);
-    // assertEquals("POST - value", entity.getProperty("value"));
-    // return id;
-    // }
+    private long assertPost() {
+        Response response = HttpUtils.post("http://localhost:8080/services/DatastoreTest.js", null);
+
+        long id = Long.parseLong(response.getAsString());
+
+        response = HttpUtils.get("http://localhost:8080/datastore?key=" + id + "&kind=Kind");
+        JsonObject entity = (JsonObject) new JsonParser().parse(response.getAsString());
+
+        assertEquals("POST - value", entity.get("value").getAsString());
+        return id;
+    }
+
     //
     // private void assertGet(DatastoreService service, final long id)
     // throws EntityNotFoundException {
@@ -256,7 +252,6 @@ public class DatastoreTest {
     // assertTrue(entity.getProperty("valid") instanceof Boolean);
     // assertTrue(entity.getProperty("date") instanceof Date);
     // }
-    //
 
     private void assertPut() throws UnsupportedEncodingException {
         Response response = HttpUtils.put("http://localhost:8080/services/DatastoreTest.js?key=5");
@@ -270,7 +265,8 @@ public class DatastoreTest {
 
         // Updated
         obj.addProperty("value", "PUT - value updated");
-        response = HttpUtils.put("http://localhost:8080/services/DatastoreTest.js?data=" + URLEncoder.encode(obj.toString(), "UTF-8"));
+        response = HttpUtils.put("http://localhost:8080/services/DatastoreTest.js?data="
+                + URLEncoder.encode(obj.toString(), "UTF-8"));
 
         response = HttpUtils.get("http://localhost:8080/datastore?key=5&kind=Kind");
         obj = (JsonObject) new JsonParser().parse(response.getAsString());

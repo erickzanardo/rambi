@@ -1,11 +1,15 @@
 package com.rambi;
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.PutMethod;
 
 public class HttpUtils {
@@ -20,6 +24,30 @@ public class HttpUtils {
 
     public static Response delete(String url) {
         return service(url, "DELETE");
+    }
+
+    public static Response post(String url, Map<String, String> params) {
+
+        HttpClient client = new HttpClient();
+
+        PostMethod method = new PostMethod(url);
+
+        if (params != null) {
+            Set<Entry<String, String>> entrySet = params.entrySet();
+            for (Entry<String, String> entry : entrySet) {
+                method.addParameter(entry.getKey(), entry.getValue());
+            }
+        }
+
+        try {
+            client.executeMethod(method);
+            return new Response(method);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+
     }
 
     private static Response service(String url, String m) {
