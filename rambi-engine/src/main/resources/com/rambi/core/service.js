@@ -1,4 +1,5 @@
 importClass(java.lang.System);
+importClass(javax.servlet.http.Cookie);
 
 var utils = importModule('com/rambi/core/utils.js', 'utils');
 
@@ -35,7 +36,6 @@ function RambiRequest(req) {
      * getCookies
      * getDateHeader
      * getHeader
-     * getHeaderNames
      * getHeaders
      * getIntHeader
      * getMethod
@@ -123,6 +123,13 @@ function RambiResponse(resp) {
     this.sendRedirect = function (url) {
         if (typeof(header) === 'string') {
             return _resp.sendRedirect(utils.jsonToJavaType(url));
+        }
+    };
+
+    this.addCookie = function(key, value) {
+        if (typeof(key) === 'string' && typeof(value) === 'string') {
+            var cookie = new Cookie(utils.jsonToJavaType(key), utils.jsonToJavaType(value));
+            _resp.addCookie(cookie);
         }
     };
 };

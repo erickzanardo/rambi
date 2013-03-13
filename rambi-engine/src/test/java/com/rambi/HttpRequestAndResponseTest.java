@@ -36,6 +36,9 @@ public class HttpRequestAndResponseTest {
         assertTrue(resp.getHeader("Date-Header").startsWith("Thu, 01 Jan 1970"));
         assertEquals("1", resp.getHeader("Int-Header"));
         assertEquals("Test", resp.getHeader("Test-Header"));
+
+        assertEquals("CookieTestValue", resp.getCookie("My-Cookie").getValue());
+
         assertEquals(403, resp.getStatus());
     }
 

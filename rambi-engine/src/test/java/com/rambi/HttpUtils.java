@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.commons.httpclient.Cookie;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
@@ -42,7 +43,7 @@ public class HttpUtils {
 
         try {
             client.executeMethod(method);
-            return new Response(method);
+            return new Response(method, client);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -65,7 +66,7 @@ public class HttpUtils {
 
         try {
             client.executeMethod(method);
-            return new Response(method);
+            return new Response(method, client);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -78,9 +79,11 @@ public class HttpUtils {
 class Response {
 
     private HttpMethod method;
+    private HttpClient client;
 
-    public Response(HttpMethod method) {
+    public Response(HttpMethod method, HttpClient client) {
         this.method = method;
+        this.client = client;
     }
 
     public String getHeader(String key) {
@@ -104,4 +107,13 @@ class Response {
         return null;
     }
 
+    public Cookie getCookie(String cookie) {
+        Cookie[] cookies = client.getState().getCookies();
+        for (Cookie c : cookies) {
+            if (cookie.equals(c.getName())) {
+                return c;
+            }
+        }
+        return null;
+    }
 }

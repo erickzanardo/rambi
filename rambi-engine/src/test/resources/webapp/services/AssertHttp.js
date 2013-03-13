@@ -14,6 +14,8 @@ var service = {
         ret.contentType = resp.contentType();
         ret.hasHeader = resp.containsHeader("Test-Header");
 
+        resp.addCookie("My-Cookie", "CookieTestValue");
+
         resp.print(JSON.stringify(ret));
         resp.status(403);
     }
