@@ -40,6 +40,17 @@ public class HttpRequestAndResponseTest {
         assertEquals("CookieTestValue", resp.getCookie("My-Cookie").getValue());
 
         assertEquals(403, resp.getStatus());
+
+        // Test redirect
+        resp = HttpUtils.get("http://localhost:8080/services/Redirect.js");
+        JsonObject o = (JsonObject) new JsonParser().parse(resp.getAsString());
+        assertEquals("OK", o.get("status").getAsString());
+
+        // Test forward
+        resp = HttpUtils.get("http://localhost:8080/services/Forward.js");
+        o = (JsonObject) new JsonParser().parse(resp.getAsString());
+        assertEquals("OK", o.get("status").getAsString());
+
     }
 
     @After

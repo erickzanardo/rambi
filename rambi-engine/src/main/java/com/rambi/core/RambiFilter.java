@@ -39,7 +39,10 @@ public class RambiFilter implements Filter {
 
         ServletContext servletContext = config.getServletContext();
 
-        if (!RambiScriptMachine.getInstance().executeHttpRequest(request, response, servletContext)) {
+        RambiScriptStatus status = RambiScriptMachine.getInstance().executeHttpRequest(request, response,
+                servletContext);
+
+        if (status.equals(RambiScriptStatus.NOT_FOUND) || status.equals(RambiScriptStatus.OK_REQUIRE_CHAIN)) {
             chain.doFilter(request, response);
         }
     }

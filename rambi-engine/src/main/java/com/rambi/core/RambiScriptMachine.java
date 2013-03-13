@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ImporterTopLevel;
+import org.mozilla.javascript.NativeJavaObject;
 import org.mozilla.javascript.Script;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
@@ -41,7 +42,6 @@ public class RambiScriptMachine {
 
         String services = RambiScriptMachine.readFile("com/rambi/core/service.js");
 
-        // TODO cache
         Script servicesScript = cx.compileString(services, "services.js", 1, null);
         servicesScript.exec(cx, global);
 
@@ -55,7 +55,7 @@ public class RambiScriptMachine {
         return instance;
     }
 
-    public boolean executeHttpRequest(HttpServletRequest req, HttpServletResponse resp, ServletContext servletContext) {
+    public RambiScriptStatus executeHttpRequest(HttpServletRequest req, HttpServletResponse resp, ServletContext servletContext) {
         String method = req.getMethod().toLowerCase();
         RambiScriptMachine.servletContext.set(servletContext);
         try {
@@ -70,10 +70,12 @@ public class RambiScriptMachine {
                 script.exec(cx, scriptableObject);
 
                 Function f = (Function) global.get("doService");
-                
-                f.call(cx, global, scriptableObject,
+
+                Object call = f.call(cx, global, scriptableObject,
                         new Object[] { scriptableObject.get("service"), req, resp, method });
-                return true;
+
+                Object unwrapped = ((NativeJavaObject) call).unwrap();
+                return (RambiScriptStatus) unwrapped;
 
             }
         } catch (Exception e) {
@@ -87,7 +89,7 @@ public class RambiScriptMachine {
             Context.exit();
             RambiScriptMachine.servletContext.remove();
         }
-        return false;
+        return RambiScriptStatus.NOT_FOUND;
     }
 
     public static ScriptableObject importModule(Context cx, Scriptable thisObj, Object[] args, Function funObj) {
@@ -118,7 +120,6 @@ public class RambiScriptMachine {
 
         ScriptableObject object = (ScriptableObject) cx.newObject(thisObj);
 
-        // TODO cache
         Script script = cx.compileString(file, path, 1, null);
         script.exec(cx, object);
 

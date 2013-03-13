@@ -1,21 +1,37 @@
 importClass(java.lang.System);
 importClass(javax.servlet.http.Cookie);
+importClass(com.rambi.core.RambiScriptStatus);
 
 var utils = importModule('com/rambi/core/utils.js', 'utils');
 
-function doService(service, req, resp, type) {
+function doService(service, _req, _resp, type) {
     if (service[type]) {
-        service[type](new RambiRequest(req), new RambiResponse(resp));
+        var resp = new RambiResponse(_resp);
+        var req = new RambiRequest(_req, _resp);
+        service[type](req, resp);
+
+        if (resp.requireChain) {
+            return RambiScriptStatus.OK_REQUIRE_CHAIN;
+        } else {
+            return RambiScriptStatus.OK;
+        }
     } else {
         throw "unsupported";
     }
 }
 
-function RambiRequest(req) {
+function RambiRequest(req, resp) {
     var _req = req;
+    var _resp = resp;
 
     this.param = function(key) {
         return _req.getParameter(key);
+    };
+
+    this.forward = function(url) {
+        if (typeof(url) === 'string') {
+            _req.getRequestDispatcher(url).forward(_req, _resp);
+        }
     };
 
     /* TODO methods to include
@@ -121,8 +137,9 @@ function RambiResponse(resp) {
     };
 
     this.sendRedirect = function (url) {
-        if (typeof(header) === 'string') {
-            return _resp.sendRedirect(utils.jsonToJavaType(url));
+        if (typeof(url) === 'string') {
+            _resp.sendRedirect(utils.jsonToJavaType(url));
+            this.requireChain = true;
         }
     };
 
