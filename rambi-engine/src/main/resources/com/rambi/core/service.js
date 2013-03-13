@@ -1,5 +1,7 @@
 importClass(java.lang.System);
 
+var utils = importModule('com/rambi/core/utils.js', 'utils');
+
 function doService(service, req, resp, type) {
     if (service[type]) {
         service[type](new RambiRequest(req), new RambiResponse(resp));
@@ -50,35 +52,80 @@ function RambiResponse(resp) {
         if (val != null) {
             _resp.getWriter().print(val.toString());
         }
-    }
+    };
 
     this.println = function(val) {
         if (val != null) {
             _resp.getWriter().println(val.toString());
         }
-    }
+    };
 
-    /* TODO methods to include
-     * getCharacterEncoding
-     * getContentType
-     * setCharacterEncoding
-     * setContentType
-     * setContentLength
-     * addCookie
-     * addDateHeader
-     * addHeader
-     * addIntHeader
-     * containsHeader
-     * encodeRedirectURL
-     * encodeURL
-     * sendError
-     * sendRedirect
-     * setDateHeader
-     * setHeader
-     * setIntHeader
-     * setStatus
-     */
-}
+    this.characterEncoding = function(e) {
+        if (e) {
+            var ret = utils.jsonToJavaType(e);
+            _resp.setCharacterEncoding(ret);
+        } else {
+            return utils.javaToJsonType(_resp.getCharacterEncoding());
+        }
+    };
+
+    this.contentType = function(c) {
+        if (c) {
+            var ret = utils.jsonToJavaType(c);
+            _resp.setContentType(c);
+        } else {
+            return utils.javaToJsonType(_resp.getContentType());
+        }
+    };
+
+    this.contentLength = function (l) {
+        if (l && typeof(l) === 'number') {
+            var ret = utils.jsonToJavaType(l);
+            _resp.setContentLength(ret);
+        }
+    };
+
+    this.dateHeader = function(key, l) {
+        if (key && typeof(l) === 'number') {
+            var ret = utils.jsonToJavaType(l);
+            _resp.addDateHeader(key, ret);
+        }
+    };
+
+    this.intHeader = function(key, l) {
+        if (key && typeof(l) === 'number') {
+            var ret = utils.jsonToJavaType(l);
+            _resp.addIntHeader(key, ret);
+        }
+    };
+
+    this.header = function(key, l) {
+        if (key && typeof(l) === 'string') {
+            var ret = utils.jsonToJavaType(l);
+            _resp.addHeader(key, ret);
+        }
+    };
+
+    this.status = function (s) {
+        if (s && typeof(s) === 'number') {
+            var ret = utils.jsonToJavaType(s);
+            _resp.setStatus(ret);
+        }
+    };
+
+    this.containsHeader = function (header) {
+        if (typeof(header) === 'string') {
+            return _resp.containsHeader(utils.jsonToJavaType(header));
+        }
+        return false;
+    };
+
+    this.sendRedirect = function (url) {
+        if (typeof(header) === 'string') {
+            return _resp.sendRedirect(utils.jsonToJavaType(url));
+        }
+    };
+};
 
 console = {
         info: function(v) {

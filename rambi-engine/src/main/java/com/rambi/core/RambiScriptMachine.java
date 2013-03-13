@@ -70,6 +70,7 @@ public class RambiScriptMachine {
                 script.exec(cx, scriptableObject);
 
                 Function f = (Function) global.get("doService");
+                
                 f.call(cx, global, scriptableObject,
                         new Object[] { scriptableObject.get("service"), req, resp, method });
                 return true;

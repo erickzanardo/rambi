@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.DeleteMethod;
@@ -80,6 +81,14 @@ class Response {
 
     public Response(HttpMethod method) {
         this.method = method;
+    }
+
+    public String getHeader(String key) {
+        Header responseHeader = method.getResponseHeader(key);
+        if (responseHeader != null) {
+            return responseHeader.getValue();
+        }
+        return null;
     }
 
     public int getStatus() {

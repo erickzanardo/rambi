@@ -7,7 +7,7 @@ var utils = {
         jsonToJavaType : function(v) {
             if (typeof (v) == 'number') {
                 if (v % 1 === 0) {
-                    return new Long(v);
+                    return new java.lang.Long(v);
                 } else {
                     return new Double(v);
                 }

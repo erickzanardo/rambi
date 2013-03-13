@@ -5,7 +5,6 @@ importClass(java.lang.Double);
 importClass(com.google.appengine.api.datastore.Query);
 importClass(com.google.appengine.api.datastore.FetchOptions);
 
-
 var utils = importModule('com/rambi/core/utils.js', 'utils');
 
 function db() {
