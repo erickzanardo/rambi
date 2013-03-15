@@ -1,6 +1,7 @@
 package com.rambi;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -17,43 +18,37 @@ import org.apache.commons.httpclient.methods.PutMethod;
 public class HttpUtils {
 
     public static Response get(String url) {
-        return service(url, "GET");
+        return service(new Request().url(url).method("GET"));
     }
 
     public static Response put(String url) {
-        return service(url, "PUT");
+        return service(new Request().url(url).method("PUT"));
     }
 
     public static Response delete(String url) {
-        return service(url, "DELETE");
+        return service(new Request().url(url).method("DELETE"));
     }
 
     public static Response post(String url, Map<String, String> params) {
 
-        HttpClient client = new HttpClient();
-
-        PostMethod method = new PostMethod(url);
+        Request req = new Request();
+        req.url(url).method("POST");
 
         if (params != null) {
             Set<Entry<String, String>> entrySet = params.entrySet();
             for (Entry<String, String> entry : entrySet) {
-                method.addParameter(entry.getKey(), entry.getValue());
+                req.param(entry.getKey(), entry.getValue());
             }
         }
 
-        try {
-            client.executeMethod(method);
-            return new Response(method, client);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return null;
-
+        return service(req);
     }
 
-    private static Response service(String url, String m) {
+    public static Response service(Request req) {
         HttpClient client = new HttpClient();
+
+        String m = req.getMethod();
+        String url = req.getUrl();
 
         HttpMethod method = null;
         if ("GET".equals(m)) {
@@ -62,6 +57,15 @@ public class HttpUtils {
             method = new PutMethod(url);
         } else if ("DELETE".equals(m)) {
             method = new DeleteMethod(url);
+        } else if ("POST".equals(m)) {
+            PostMethod postMethod = new PostMethod(url);
+
+            Set<Entry<String, String>> entrySet = req.getParams().entrySet();
+            for (Entry<String, String> entry : entrySet) {
+                postMethod.addParameter(entry.getKey(), entry.getValue());
+            }
+
+            method = postMethod;
         }
 
         try {
@@ -72,6 +76,40 @@ public class HttpUtils {
         }
 
         return null;
+    }
+
+}
+
+class Request {
+    private String url;
+    private String method = "GET";
+    private Map<String, String> params = new HashMap<String, String>();
+
+    public Request url(String url) {
+        this.url = url;
+        return this;
+    }
+
+    public Request method(String method) {
+        this.method = method;
+        return this;
+    }
+
+    public Request param(String key, String value) {
+        this.params.put(key, value);
+        return this;
+    }
+
+    public Map<String, String> getParams() {
+        return params;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public String getMethod() {
+        return method;
     }
 
 }

@@ -25,6 +25,10 @@ public class HttpRequestAndResponseTest {
 
         JsonObject obj = (JsonObject) new JsonParser().parse(resp.getAsString());
 
+        // Request assert
+        
+
+        // Response assert
         assertEquals("UTF-8", obj.get("characterEncoding").getAsString());
         assertEquals("application/json;charset=UTF-8", obj.get("contentType").getAsString());
         assertTrue(obj.get("hasHeader").getAsBoolean());
