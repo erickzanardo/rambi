@@ -26,7 +26,8 @@ public class HttpRequestAndResponseTest {
         JsonObject obj = (JsonObject) new JsonParser().parse(resp.getAsString());
 
         // Request assert
-        
+        assertEquals("127.0.0.1", obj.get("localAddr").getAsString());
+        assertEquals("127.0.0.1", obj.get("localName").getAsString());
 
         // Response assert
         assertEquals("UTF-8", obj.get("characterEncoding").getAsString());
@@ -35,7 +36,7 @@ public class HttpRequestAndResponseTest {
 
         assertEquals("application/json;charset=UTF-8", resp.getHeader("Content-Type"));
 
-        assertEquals("100", resp.getHeader("Content-Length"));
+        assertEquals("10000", resp.getHeader("Content-Length"));
 
         assertTrue(resp.getHeader("Date-Header").startsWith("Thu, 01 Jan 1970"));
         assertEquals("1", resp.getHeader("Int-Header"));

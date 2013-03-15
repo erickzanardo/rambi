@@ -34,13 +34,22 @@ function RambiRequest(req, resp) {
         }
     };
 
+    this.localAddr = function() {
+        return utils.javaToJsonType(_req.getLocalAddr());
+    };
+
+    this.localName = function() {
+        return utils.javaToJsonType(_req.getLocalName());
+    };
+
+    this.localPort = function() {
+        return utils.javaToJsonType(_req.getLocalPort());
+    };
+
     /* TODO methods to include
      * getCharacterEncoding
      * getContentLength
      * getContentType
-     * getLocalAddr
-     * getLocalName
-     * getLocalPort
      * getParameterMap
      * getParameterNames
      * getParameterValues
