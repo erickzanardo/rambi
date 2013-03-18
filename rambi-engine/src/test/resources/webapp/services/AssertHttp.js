@@ -17,6 +17,13 @@ var service = {
         // Req attrs
         ret.localAddr = req.localAddr();
         ret.localName = req.localName();
+        ret.remoteAddr = req.remoteAddr();
+        ret.remoteHost = req.remoteHost();
+        ret.protocol = req.protocol();
+        ret.method = req.method();
+        ret.requestURI = req.requestURI();
+        ret.queryString = req.queryString();
+        ret.contextPath = req.contextPath();
 
         resp.addCookie("My-Cookie", "CookieTestValue");
 

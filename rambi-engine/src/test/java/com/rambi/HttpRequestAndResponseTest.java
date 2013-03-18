@@ -21,13 +21,21 @@ public class HttpRequestAndResponseTest {
     @Test
     public void test() throws Exception {
         // Check server
-        Response resp = HttpUtils.get("http://localhost:8080/services/AssertHttp.js");
+        Response resp = HttpUtils.get("http://localhost:8080/services/AssertHttp.js?bla=true");
 
         JsonObject obj = (JsonObject) new JsonParser().parse(resp.getAsString());
 
         // Request assert
         assertEquals("127.0.0.1", obj.get("localAddr").getAsString());
         assertEquals("127.0.0.1", obj.get("localName").getAsString());
+
+        assertEquals("127.0.0.1", obj.get("remoteAddr").getAsString());
+        assertEquals("127.0.0.1", obj.get("remoteHost").getAsString());
+        assertEquals("HTTP/1.1", obj.get("protocol").getAsString());
+        assertEquals("GET", obj.get("method").getAsString());
+        assertEquals("/services/AssertHttp.js", obj.get("requestURI").getAsString());
+        assertEquals("bla=true", obj.get("queryString").getAsString());
+        assertEquals("", obj.get("contextPath").getAsString());
 
         // Response assert
         assertEquals("UTF-8", obj.get("characterEncoding").getAsString());

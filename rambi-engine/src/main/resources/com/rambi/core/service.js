@@ -46,27 +46,47 @@ function RambiRequest(req, resp) {
         return utils.javaToJsonType(_req.getLocalPort());
     };
 
+    this.remoteAddr = function() {
+        return utils.javaToJsonType(_req.getRemoteAddr());
+    };
+
+    this.remoteHost = function() {
+        return utils.javaToJsonType(_req.getRemoteHost());
+    };
+
+    this.remotePort = function() {
+        return utils.javaToJsonType(_req.getRemotePort());
+    };
+
+    this.protocol = function() {
+        return utils.javaToJsonType(_req.getProtocol());
+    };
+
+    this.method = function() {
+        return utils.javaToJsonType(_req.getMethod());
+    };
+
+    this.requestURI = function() {
+        return utils.javaToJsonType(_req.getRequestURI());
+    };
+
+    this.queryString = function() {
+        return utils.javaToJsonType(_req.getQueryString());
+    };
+
+    this.contextPath = function() {
+        return utils.javaToJsonType(_req.getContextPath());
+    };
+
     /* TODO methods to include
-     * getCharacterEncoding
-     * getContentLength
-     * getContentType
      * getParameterMap
      * getParameterNames
      * getParameterValues
-     * getProtocol
-     * getRemoteAddr
-     * getRemoteHost
-     * getRemotePort
-     * getContextPath
      * getCookies
      * getDateHeader
      * getHeader
      * getHeaders
      * getIntHeader
-     * getMethod
-     * getPathInfo
-     * getQueryString
-     * getRequestURI
      */
 }
 
