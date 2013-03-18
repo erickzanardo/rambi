@@ -21,7 +21,7 @@ public class HttpRequestAndResponseTest {
     @Test
     public void test() throws Exception {
         // Check server
-        Response resp = HttpUtils.get("http://localhost:8080/services/AssertHttp.js?bla=true");
+        Response resp = HttpUtils.get("http://localhost:8080/services/AssertHttp.js?bla=true&ble=false&ble=false");
 
         JsonObject obj = (JsonObject) new JsonParser().parse(resp.getAsString());
 
@@ -34,8 +34,14 @@ public class HttpRequestAndResponseTest {
         assertEquals("HTTP/1.1", obj.get("protocol").getAsString());
         assertEquals("GET", obj.get("method").getAsString());
         assertEquals("/services/AssertHttp.js", obj.get("requestURI").getAsString());
-        assertEquals("bla=true", obj.get("queryString").getAsString());
+        assertEquals("bla=true&ble=false&ble=false", obj.get("queryString").getAsString());
         assertEquals("", obj.get("contextPath").getAsString());
+
+        JsonObject paramsMap = obj.get("paramsMap").getAsJsonObject();
+        assertEquals("true", paramsMap.get("bla").getAsString());
+        assertTrue(paramsMap.get("ble").isJsonArray());
+        assertEquals("false", paramsMap.get("ble").getAsJsonArray().get(0).getAsString());
+        assertEquals("false", paramsMap.get("ble").getAsJsonArray().get(1).getAsString());
 
         // Response assert
         assertEquals("UTF-8", obj.get("characterEncoding").getAsString());

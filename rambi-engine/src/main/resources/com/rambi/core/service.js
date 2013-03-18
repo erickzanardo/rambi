@@ -78,8 +78,31 @@ function RambiRequest(req, resp) {
         return utils.javaToJsonType(_req.getContextPath());
     };
 
+    this.paramsMap = function() {
+        var params = _req.getParameterMap();
+        if (params != null) {
+            var ret = {};
+            var entries = params.entrySet().toArray();
+            for (var i in entries) {
+               var entry = entries[i];
+               var key = utils.javaToJsonType(entry.getKey());
+               var value = null;
+               if (entry.getValue().length == 1) {
+                   value = utils.javaToJsonType(entry.getValue()[0]);
+               } else {
+                   value = [];
+                   for (var j in entry.getValue()) {
+                       value.push(utils.javaToJsonType(entry.getValue()[j]));
+                   }
+               }
+               ret[key] = value;
+            }
+            return ret;
+        }
+        return {};
+    };
+
     /* TODO methods to include
-     * getParameterMap
      * getParameterNames
      * getParameterValues
      * getCookies
