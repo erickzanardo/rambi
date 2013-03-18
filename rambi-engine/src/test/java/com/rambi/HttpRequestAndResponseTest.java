@@ -7,6 +7,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -21,7 +22,11 @@ public class HttpRequestAndResponseTest {
     @Test
     public void test() throws Exception {
         // Check server
-        Response resp = HttpUtils.get("http://localhost:8080/services/AssertHttp.js?bla=true&ble=false&ble=false");
+        Request req = new Request();
+        req.url("http://localhost:8080/services/AssertHttp.js?bla=true&ble=false&ble=false").method("GET")
+                .cookie("MyRequestCookie", "MyRequestCookieValue; PATH=/;").header("headerTest", "Test");
+
+        Response resp = HttpUtils.service(req);
 
         JsonObject obj = (JsonObject) new JsonParser().parse(resp.getAsString());
 
@@ -36,12 +41,27 @@ public class HttpRequestAndResponseTest {
         assertEquals("/services/AssertHttp.js", obj.get("requestURI").getAsString());
         assertEquals("bla=true&ble=false&ble=false", obj.get("queryString").getAsString());
         assertEquals("", obj.get("contextPath").getAsString());
+        assertEquals("Test", obj.get("headerTest").getAsString());
 
-        JsonObject paramsMap = obj.get("paramsMap").getAsJsonObject();
-        assertEquals("true", paramsMap.get("bla").getAsString());
-        assertTrue(paramsMap.get("ble").isJsonArray());
-        assertEquals("false", paramsMap.get("ble").getAsJsonArray().get(0).getAsString());
-        assertEquals("false", paramsMap.get("ble").getAsJsonArray().get(1).getAsString());
+        JsonObject paramMap = obj.get("paramMap").getAsJsonObject();
+        assertEquals("true", paramMap.get("bla").getAsString());
+        assertTrue(paramMap.get("ble").isJsonArray());
+        assertEquals("false", paramMap.get("ble").getAsJsonArray().get(0).getAsString());
+        assertEquals("false", paramMap.get("ble").getAsJsonArray().get(1).getAsString());
+
+        JsonArray paramNames = obj.get("paramNames").getAsJsonArray();
+        assertEquals("ble", paramNames.get(0).getAsString());
+        assertEquals("bla", paramNames.get(1).getAsString());
+
+        JsonArray paramValues = obj.get("paramValues").getAsJsonArray();
+        assertEquals("false", paramValues.get(0).getAsString());
+        assertEquals("false", paramValues.get(1).getAsString());
+
+        JsonArray cookies = obj.get("cookies").getAsJsonArray();
+
+        JsonObject cookie = cookies.get(0).getAsJsonObject();
+        assertEquals("MyRequestCookie", cookie.get("name").getAsString());
+        assertEquals("MyRequestCookieValue", cookie.get("value").getAsString());
 
         // Response assert
         assertEquals("UTF-8", obj.get("characterEncoding").getAsString());

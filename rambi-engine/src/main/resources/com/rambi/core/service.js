@@ -78,7 +78,7 @@ function RambiRequest(req, resp) {
         return utils.javaToJsonType(_req.getContextPath());
     };
 
-    this.paramsMap = function() {
+    this.paramMap = function() {
         var params = _req.getParameterMap();
         if (params != null) {
             var ret = {};
@@ -102,15 +102,62 @@ function RambiRequest(req, resp) {
         return {};
     };
 
-    /* TODO methods to include
-     * getParameterNames
-     * getParameterValues
-     * getCookies
-     * getDateHeader
-     * getHeader
-     * getHeaders
-     * getIntHeader
-     */
+    this.paramNames = function() {
+        var names = _req.getParameterNames();
+
+        if (names != null) {
+            var ret = [];
+            while (names.hasMoreElements()) {
+                ret.push(utils.javaToJsonType(names.nextElement()));
+            }
+            return ret;
+        }
+
+        return [];
+    };
+
+    this.paramValues = function(key) {
+        var values = _req.getParameterValues(utils.jsonToJavaType(key));
+
+        if (values != null) {
+            var ret = [];
+            for (var i in values) {
+                ret.push(utils.javaToJsonType(values[i]));
+            }
+            return ret;
+        }
+
+        return [];
+    };
+
+    this.cookies = function() {
+        var cookies = _req.getCookies();
+
+        if (cookies != null) {
+            var ret = [];
+            for (var i in cookies) {
+                var c = cookies[i];
+
+                var cookieJson = {
+                        name: utils.javaToJsonType(c.getName()),
+                        value: utils.javaToJsonType(c.getValue()),
+                }
+
+                ret.push(cookieJson);
+            }
+            return ret;
+        }
+
+        return [];
+    };
+
+    this.header = function(key) {
+        var header = _req.getHeader(utils.jsonToJavaType(key));
+        if (header != null) {
+            return utils.javaToJsonType(header);
+        }
+        return null;
+    };
 }
 
 function RambiResponse(resp) {

@@ -68,6 +68,16 @@ public class HttpUtils {
             method = postMethod;
         }
 
+        Set<Entry<String, String>> cookiesEntry = req.getCookies().entrySet();
+        for (Entry<String, String> entry : cookiesEntry) {
+            method.setRequestHeader("Cookie", entry.getKey() + "=" + entry.getValue());
+        }
+
+        Set<Entry<String, String>> headersEntry = req.getHeaders().entrySet();
+        for (Entry<String, String> entry : headersEntry) {
+            method.setRequestHeader(entry.getKey(), entry.getValue());
+        }
+
         try {
             client.executeMethod(method);
             return new Response(method, client);
@@ -84,6 +94,8 @@ class Request {
     private String url;
     private String method = "GET";
     private Map<String, String> params = new HashMap<String, String>();
+    private Map<String, String> headers = new HashMap<String, String>();
+    private Map<String, String> cookies = new HashMap<String, String>();
 
     public Request url(String url) {
         this.url = url;
@@ -100,6 +112,16 @@ class Request {
         return this;
     }
 
+    public Request header(String key, String value) {
+        this.headers.put(key, value);
+        return this;
+    }
+
+    public Request cookie(String key, String value) {
+        this.cookies.put(key, value);
+        return this;
+    }
+
     public Map<String, String> getParams() {
         return params;
     }
@@ -112,6 +134,13 @@ class Request {
         return method;
     }
 
+    public Map<String, String> getCookies() {
+        return cookies;
+    }
+
+    public Map<String, String> getHeaders() {
+        return headers;
+    }
 }
 
 class Response {

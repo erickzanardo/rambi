@@ -24,7 +24,11 @@ var service = {
         ret.requestURI = req.requestURI();
         ret.queryString = req.queryString();
         ret.contextPath = req.contextPath();
-        ret.paramsMap = req.paramsMap();
+        ret.paramMap = req.paramMap();
+        ret.paramNames = req.paramNames();
+        ret.paramValues = req.paramValues("ble");
+        ret.cookies = req.cookies();
+        ret.headerTest = req.header("headerTest");
 
         resp.addCookie("My-Cookie", "CookieTestValue");
 
