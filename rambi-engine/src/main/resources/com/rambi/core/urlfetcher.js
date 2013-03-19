@@ -1,4 +1,4 @@
-importPackage(com.google.appengine.api.urlfetch);
+importClass(com.google.appengine.api.urlfetch.URLFetchServiceFactory);
 
 var utils = importModule('com/rambi/core/utils.js', 'utils');
 
