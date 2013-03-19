@@ -25,7 +25,11 @@ function RambiRequest(req, resp) {
     var _resp = resp;
 
     this.param = function(key) {
-        return _req.getParameter(key);
+    	var p = _req.getParameter(key);
+    	if (p != null) {
+    		return utils.javaToJsonType(p);
+    	}
+        return null;
     };
 
     this.forward = function(url) {
