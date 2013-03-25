@@ -133,6 +133,10 @@ public class RambiScriptMachine {
     }
 
     private static String readStream(InputStream resourceAsStream) {
+        if (resourceAsStream == null) {
+            throw new RuntimeException("File not found to import");
+        }
+
         BufferedReader br = null;
         StringBuilder ret = new StringBuilder();
 

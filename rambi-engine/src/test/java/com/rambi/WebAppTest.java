@@ -3,6 +3,7 @@ package com.rambi;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
 import org.junit.Before;
@@ -36,6 +37,16 @@ public class WebAppTest {
 
         assertEquals("Received:Hello!", HttpUtils.get("http://localhost:8080/services/webModule.js?param=Hello!")
                 .getAsString());
+
+        // Invalid import webmodule
+        resp = HttpUtils.get("http://localhost:8080/services/invalidWebModule.js?param=Hello!");
+        assertEquals(500, resp.getStatus());
+        assertTrue(resp.getAsString().contains("File not found to import (/services/invalidWebModule.js#1"));
+
+        // Invalid import module
+        resp = HttpUtils.get("http://localhost:8080/services/invalidModule.js?param=Hello!");
+        assertEquals(500, resp.getStatus());
+        assertTrue(resp.getAsString().contains("File not found to import (/services/invalidModule.js#1"));
 
         assertEquals(404, HttpUtils.get("http://localhost:8080/services/thisDoesNotExist.css").getStatus());
         assertEquals(404, HttpUtils.get("http://localhost:8080/services/thisShouldNotBeHere.css").getStatus());
