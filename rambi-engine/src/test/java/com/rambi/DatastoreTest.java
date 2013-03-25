@@ -235,6 +235,11 @@ public class DatastoreTest {
         response = HttpUtils.get("http://localhost:8080/datastore?key=5&kind=Kind");
         obj = (JsonObject) new JsonParser().parse(response.getAsString());
         assertEquals("PUT - value updated", obj.get("value").getAsString());
+
+        // Error
+        response = HttpUtils.put("http://localhost:8080/services/DatastoreTest.js?error=true&data="
+                + URLEncoder.encode(obj.toString(), "UTF-8"));
+        assertEquals(500, response.getStatus());
     };
 
     private void assertNoFilter(boolean b) {

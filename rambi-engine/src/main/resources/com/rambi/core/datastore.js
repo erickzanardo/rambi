@@ -48,6 +48,9 @@ function db() {
         };
 
         this.put = function(kind, data, identifier) {
+            if (typeof(kind) !== "string") {
+                throw "Kind must be String!";
+            }
             var entity;
 
             if (identifier) {

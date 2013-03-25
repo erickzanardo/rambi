@@ -225,6 +225,9 @@ var service = {
             data._id = key;
             resp.print(JSON.stringify(data));
 
+        } else if (req.param("data") && req.param("error")) {
+            var data = req.paramAsJson("data")
+            db().put(data, data._id);
         } else if(req.param("data")) {
             var data = JSON.parse(req.param("data"));
             data.value = "PUT - value updated"
