@@ -110,6 +110,19 @@ public class DatastoreTest {
         assertLimitOffset(false);
         assertLimitOffset(true);
 
+        assertDelete(id);
+    }
+
+    private void assertDelete(long id) {
+        Response response = HttpUtils
+                .delete("http://localhost:8080/services/DatastoreTest.js?key=" + id + "&kind=Kind");
+        assertEquals(200, response.getStatus());
+
+        response = HttpUtils
+                .get("http://localhost:8080/services/DatastoreTest.js?key=" + id + "&kind=Kind");
+        assertEquals(200, response.getStatus());
+        assertEquals("null", response.getAsString());
+
     }
 
     private void assertLimitOffset(boolean b) {

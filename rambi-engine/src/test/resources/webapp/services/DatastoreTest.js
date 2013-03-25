@@ -251,4 +251,8 @@ var service = {
         var key = db().put("Kind", data);
         resp.print(key);
     },
+    delete: function(req, resp) {
+        var id = parseInt(req.param("key"));
+        db().delete(req.param("kind"), id);
+    }
 };

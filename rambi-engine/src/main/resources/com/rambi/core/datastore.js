@@ -234,5 +234,14 @@ function db() {
 
             return list;
         };
+
+        this.delete = function(kind, id) {
+            if (typeof (kind) === "undefined" || typeof(id) == "undefined") {
+                throw "kind or id is undefined";
+            }
+
+            var key = createKey(kind, id);
+            service().delete(key);
+        }
     };
 }
