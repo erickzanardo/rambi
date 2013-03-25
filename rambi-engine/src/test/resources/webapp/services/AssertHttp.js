@@ -1,7 +1,11 @@
 var service = {
     get : function(req, resp) {
 
+        var jsonFromReq = req.paramAsJson("json");
+
         var ret = {};
+        ret.jsonFromReq = jsonFromReq;
+
         // Resp attrs
         resp.characterEncoding("UTF-8");
         resp.contentType("application/json");
@@ -32,7 +36,7 @@ var service = {
 
         resp.addCookie("My-Cookie", "CookieTestValue");
 
-        resp.print(JSON.stringify(ret));
+        resp.printJson(ret);
         resp.status(403);
     }
 };

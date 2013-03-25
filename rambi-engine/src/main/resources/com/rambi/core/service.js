@@ -24,11 +24,19 @@ function RambiRequest(req, resp) {
     var _req = req;
     var _resp = resp;
 
+    this.paramAsJson = function(key) {
+        var paramStr = this.param(key);
+        if (paramStr != null) {
+            return JSON.parse(paramStr);
+        }
+        return null;
+    }
+
     this.param = function(key) {
-    	var p = _req.getParameter(key);
-    	if (p != null) {
-    		return utils.javaToJsonType(p);
-    	}
+        var p = _req.getParameter(key);
+        if (p != null) {
+            return utils.javaToJsonType(p);
+        }
         return null;
     };
 
@@ -166,6 +174,10 @@ function RambiRequest(req, resp) {
 
 function RambiResponse(resp) {
     var _resp = resp;
+
+    this.printJson = function(val) {
+        this.print(JSON.stringify(val));
+    }
 
     this.print = function(val) {
         if (val != null) {

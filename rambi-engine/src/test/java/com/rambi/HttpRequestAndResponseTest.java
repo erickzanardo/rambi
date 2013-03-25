@@ -1,7 +1,10 @@
 package com.rambi;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
+import java.net.URLEncoder;
 
 import org.junit.After;
 import org.junit.Before;
@@ -23,7 +26,9 @@ public class HttpRequestAndResponseTest {
     public void test() throws Exception {
         // Check server
         Request req = new Request();
-        req.url("http://localhost:8080/services/AssertHttp.js?bla=true&ble=false&ble=false").method("GET")
+        JsonObject o = new JsonObject();
+        o.addProperty("key", "value");
+        req.url("http://localhost:8080/services/AssertHttp.js?bla=true&ble=false&ble=false&json=" + URLEncoder.encode(o.toString(), "UTF-8")).method("GET")
                 .cookie("MyRequestCookie", "MyRequestCookieValue; PATH=/;").header("headerTest", "Test");
 
         Response resp = HttpUtils.service(req);
@@ -39,9 +44,13 @@ public class HttpRequestAndResponseTest {
         assertEquals("HTTP/1.1", obj.get("protocol").getAsString());
         assertEquals("GET", obj.get("method").getAsString());
         assertEquals("/services/AssertHttp.js", obj.get("requestURI").getAsString());
-        assertEquals("bla=true&ble=false&ble=false", obj.get("queryString").getAsString());
+        assertEquals("bla=true&ble=false&ble=false&json=%7B%22key%22%3A%22value%22%7D", obj.get("queryString").getAsString());
         assertEquals("", obj.get("contextPath").getAsString());
         assertEquals("Test", obj.get("headerTest").getAsString());
+
+        assertNotNull(obj.get("jsonFromReq"));
+        assertTrue(obj.get("jsonFromReq").isJsonObject());
+        assertEquals("value", obj.get("jsonFromReq").getAsJsonObject().get("key").getAsString());
 
         JsonObject paramMap = obj.get("paramMap").getAsJsonObject();
         assertEquals("true", paramMap.get("bla").getAsString());
@@ -51,7 +60,7 @@ public class HttpRequestAndResponseTest {
 
         JsonArray paramNames = obj.get("paramNames").getAsJsonArray();
         assertEquals("ble", paramNames.get(0).getAsString());
-        assertEquals("bla", paramNames.get(1).getAsString());
+        assertEquals("json", paramNames.get(1).getAsString());
 
         JsonArray paramValues = obj.get("paramValues").getAsJsonArray();
         assertEquals("false", paramValues.get(0).getAsString());
@@ -82,7 +91,7 @@ public class HttpRequestAndResponseTest {
 
         // Test redirect
         resp = HttpUtils.get("http://localhost:8080/services/Redirect.js");
-        JsonObject o = (JsonObject) new JsonParser().parse(resp.getAsString());
+        o = (JsonObject) new JsonParser().parse(resp.getAsString());
         assertEquals("OK", o.get("status").getAsString());
 
         // Test forward
