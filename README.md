@@ -47,3 +47,39 @@ Acessing now http://localhost:8080/services/hello.js will print Hello World on y
 
 There is only one rule to follow, every service must have a ``` service ``` object with functions to represent the HTTP methods
 that this service will serve.
+
+Modules
+=====
+
+In Rambi you can import others js files to reuse code. There are two types of import functions: importModule and importWebModule
+, the differences are that the importModule search the files in the class loader and importWebModule search in the servlet context.
+Those functions accepts two parameters, the first is the path to the file and the second is the name of the object to be
+imported
+
+Example:
+
+```javascript
+//webapp/js/module.js
+function webModule() {
+  return "I'm a web module";
+}
+
+//src/main/resources/com.app/module.js
+function module() {
+  return "I'm a module";
+}
+
+//webapp/services/modulesExamples.js
+var webModule = importWebModule("/js/module.js", "webModule");
+var module = importModule("com/app/module.js", "module");
+
+var service = {
+    get: function(req, resp) {
+        resp.println(webModule());
+        resp.println(module());
+    }
+};
+```
+Acessing http://localhost:8080/services/modulesExamples.js in your browser, should print:
+I'm a web module
+I'm a module
