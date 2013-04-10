@@ -35,6 +35,7 @@ This means that every js file under the folder services are only avaible through
 a new js file into your mapped folder, below I'll show a simple hello world service
 
 ```javascript
+//webapp/services/hello.js
 var service = {
     get: function(req, resp) {
         resp.print("Hello World!");
@@ -42,5 +43,7 @@ var service = {
 };
 ```
 
-There is only one rule to follow, every service must have an service object with functions to represent the HTTP methods
+Acessing now http://localhost:8080/services/hello.js will print Hello World on your browser!
+
+There is only one rule to follow, every service must have a ``` service ``` object with functions to represent the HTTP methods
 that this service will serve.
