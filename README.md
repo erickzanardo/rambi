@@ -124,3 +124,56 @@ var service = {
 Acessing http://localhost:8080/services/modulesExamples.js in your browser, should print:
 I'm a web module
 I'm a module
+
+Datastore
+=====
+
+Rambi provides a simple interface to deal with data persistence on datastore. To use it you must import the datastore.js module
+using the following code
+
+```javascript
+var db = importModule('com/rambi/core/datastore.js', 'db');
+```
+
+PUT
+
+The put function is used to persist data, it returns the id for the created entity and receives three parameters:
+<table>
+  <tr>
+    <th>Name</th><th>Type</th><th>Optional</th><th>Description</th>
+  </tr>
+  <tr>
+    <td>Kind</td><td>String</td><td>No</td><td>Represents the kind for the datastore entity</td>
+  </tr>
+  <tr>
+    <td>Data</td><td>JSON</td><td>No</td><td>The json to be persisted</td>
+  </tr>
+  <tr>
+    <td>Identifier</td><td>Number</td><td>Yes</td><td>The identifier to be used to create the entity, when not provided datastore automatically generate one</td>
+  </tr>
+</table>
+
+Example
+```javascript
+var id = db().put("MyKind", {language: "JavaScript"});
+```
+
+GET
+
+This function is used to recover data from datastore, it requires two parameters
+<table>
+  <tr>
+    <th>Name</th><th>Type</th><th>Optional</th><th>Description</th>
+  </tr>
+  <tr>
+    <td>Kind</td><td>String</td><td>No</td><td>kind on the datastore entity to look</td>
+  </tr>
+  <tr>
+    <td>Identifier</td><td>Number</td><td>No</td><td>The identifier that represents this entity</td>
+  </tr>
+</table>
+
+Example
+```javascript
+var entity = db().get("MyKind", 1);
+```
