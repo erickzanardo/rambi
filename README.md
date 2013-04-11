@@ -15,7 +15,7 @@ just add the following repository and dependency to you pom.xml.
   <dependency>
     <groupId>com.rambi</groupId>
     <artifactId>rambi-engine</artifactId>
-    <version>0.1.1</version>
+    <version>1.1.3</version>
   </dependency>
 ```
 
