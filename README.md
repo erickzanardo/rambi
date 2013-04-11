@@ -48,6 +48,47 @@ Acessing now http://localhost:8080/services/hello.js will print Hello World on y
 There is only one rule to follow, every service must have a ``` service ``` object with functions to represent the HTTP methods
 that this service will serve.
 
+Request and response
+=====
+Every function that represents a http method in a service receives as parameter a request and a response, the following code shows
+functions avaiable on those objects
+
+```javascript
+// Response
+resp.characterEncoding("UTF-8");
+resp.contentType("application/json");
+resp.contentLength(10000);
+resp.dateHeader("Date-Header", 0);
+resp.intHeader("Int-Header", 1);
+resp.header("Test-Header", "Test");
+resp.characterEncoding();
+resp.contentType();
+resp.containsHeader("Test-Header");
+resp.addCookie("My-Cookie", "CookieTestValue");
+resp.print("");
+resp.println("");
+resp.printJson({ret}); // shortcut for resp.print(JSON.stringify({}))
+resp.status(200);
+
+// Request
+req.param("paramname")
+req.paramAsJson("json"); // shortcut for JSON.parse(req.param("paramname"))
+req.localAddr();
+req.localName();
+req.remoteAddr();
+req.remoteHost();
+req.protocol();
+req.method();
+req.requestURI();
+req.queryString();
+req.contextPath();
+req.paramMap();
+req.paramNames();
+req.paramValues("param");
+req.cookies();
+req.header("headerTest");
+```
+
 Modules
 =====
 
