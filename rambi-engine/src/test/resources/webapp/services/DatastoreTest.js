@@ -266,6 +266,7 @@ var service = {
             decimalValue : 0.1,
             values : [ 1, 2, 3 ],
             valid : true,
+            booleanFalseValue : false,
             date : d
         };
 

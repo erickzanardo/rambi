@@ -43,7 +43,7 @@ var utils = {
             } else if (value instanceof java.lang.Number) {
                 return new Number(value) + 0;
             } else if (value instanceof java.lang.Boolean) {
-                return value ? true : false;
+                return value.equals(java.lang.Boolean.TRUE) ? true : false;
             } else if (value instanceof java.util.Date) {
                 return new Date(value.getTime());
             } else if (value instanceof List) {

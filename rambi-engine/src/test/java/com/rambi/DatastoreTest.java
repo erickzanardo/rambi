@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -193,6 +194,7 @@ public class DatastoreTest {
         assertEquals("POST - value", resp.get("value").getAsString());
         assertEquals(1, resp.get("numberValue").getAsInt());
         assertEquals(0.1d, resp.get("decimalValue").getAsDouble(), 0);
+        assertFalse(resp.get("booleanFalseValue").getAsBoolean());
 
         // embed id
         assertNotNull(resp.get("_id"));
