@@ -233,6 +233,24 @@ var service = {
             data.value = "PUT - value updated"
 
             db().put("Kind", data, data._id);
+        } else if (req.param("fromDB")) {
+        	var d = new Date();
+            d.setDate(9);
+            d.setMonth(0);
+            d.setYear(2013);
+
+            var data = {
+                value : "POST - value",
+                numberValue : 1,
+                decimalValue : 0.1,
+                values : [ 1, 2, 3 ],
+                valid : true,
+                date : d
+            };
+
+            db().put("Kind", data, 999);
+            data = db().get("Kind", 999);
+            db().put("Kind", data, 999);
         }
     },
     post : function(req, resp) {

@@ -41,7 +41,7 @@ var utils = {
             if (value instanceof String) {
                 return '' + value;
             } else if (value instanceof java.lang.Number) {
-                return new Number(value);
+                return new Number(value) + 0;
             } else if (value instanceof java.lang.Boolean) {
                 return value ? true : false;
             } else if (value instanceof java.util.Date) {

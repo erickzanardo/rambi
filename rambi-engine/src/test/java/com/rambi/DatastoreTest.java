@@ -229,12 +229,18 @@ public class DatastoreTest {
 
         // Updated
         obj.addProperty("value", "PUT - value updated");
+        obj.addProperty("numberValue", 3);
         response = HttpUtils.put("http://localhost:8080/services/DatastoreTest.js?data="
                 + URLEncoder.encode(obj.toString(), "UTF-8"));
 
         response = HttpUtils.get("http://localhost:8080/datastore?key=5&kind=Kind");
         obj = (JsonObject) new JsonParser().parse(response.getAsString());
         assertEquals("PUT - value updated", obj.get("value").getAsString());
+        assertEquals(3, obj.get("numberValue").getAsInt());
+
+        // From, put from db
+        response = HttpUtils.put("http://localhost:8080/services/DatastoreTest.js?fromDB=true");
+        assertEquals(200, response.getStatus());
 
         // Error
         response = HttpUtils.put("http://localhost:8080/services/DatastoreTest.js?error=true&data="
