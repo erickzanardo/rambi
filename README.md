@@ -53,6 +53,14 @@ You must configure a filter to enable rambi handle the requests to your services
   </filter-mapping>
 ```
 
+Google App Engine does cache automatically of static resources (like our js files), making impossible for rambi to filter the service files, so we must tell GAE not to do this cache with our files, to do so just add the following lines in you appengine-web.xml
+
+```xml
+  <static-files>
+		<exclude path="/services/**.js" />
+	</static-files>
+```
+
 This means that every js file under the folder services are only avaible through rambi. To create a new service just add
 a new js file into your mapped folder, below I'll show a simple hello world service
 
