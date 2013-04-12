@@ -177,3 +177,11 @@ Example
 ```javascript
 var entity = db().get("MyKind", 1);
 ```
+
+DELETE
+
+This function is used to delete entities from the datastore and it requires the same parameters that the get function require.
+
+```javascript
+db().delete("MyKind", 1);
+```
