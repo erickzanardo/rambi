@@ -15,6 +15,9 @@ Contents
   <tr>
     <td><a href="#datastore">Datastore</a></td>
   </tr>
+  <tr>
+    <td><a href="#memcache">Memcache</a></td>
+  </tr>
 </table>
 
 Development: [![Build Status](https://travis-ci.org/erickzanardo/rambi.png?branch=master)](https://travis-ci.org/erickzanardo/rambi)
@@ -285,3 +288,31 @@ var query = {
 };
 result = db().query(query);
 ```
+
+Memcache
+=====
+
+Rambi provides a simple interface to access Google App Engine memcache, it contains functions to put, delete and get information. Bellow there is a simple service as an example
+
+```javascript
+var cache = importModule('com/rambi/core/memcache.js', 'cache');
+
+var service = {
+    get : function(req, resp) {
+        var value = cache().get("value");
+        resp.print(value);
+    },
+    put : function(req, resp) {
+        if (req.param("expirationInMillis")) {
+            var e = parseInt(req.param("expirationInMillis"));
+            cache().put("value", req.param("value"), e);
+        } else {
+            cache().put("value", req.param("value"));
+        }
+    },
+    delete : function(req, resp) {
+        cache().delete("value");
+    }
+};
+```
+
