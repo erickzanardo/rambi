@@ -185,3 +185,71 @@ This function is used to delete entities from the datastore and it requires the 
 ```javascript
 db().delete("MyKind", 1);
 ```
+QUERIES
+It's possible to perform queries on your persisted data using the function prepareQuery, it's receive the kind as parameter and return an object based on the design pattern builder, that allow you to add filters, sorts, limit, offset and fecth the results, the following table list the avaiable functions on this object.
+
+<table>
+  <tr>
+    <th>Function</th><th>Usage</th><th>Description</th>
+  </tr>
+  <tr>
+    <td>in</td>
+    <td>db().prepareQuery("Kind").in("Field", [0,1])</td>
+    <td>Filter operator IN</td>
+  </tr>
+  <tr>
+    <td>notEq</td>
+    <td>db().prepareQuery("Kind").notEq("Field", 1)</td>
+    <td>Filter operator NOT EQUALS</td>
+  </tr>
+  <tr>
+    <td>eq</td>
+    <td>db().prepareQuery("Kind").eq("Field", 1)</td>
+    <td>Filter operator EQUALS</td>
+  </tr>
+  <tr>
+    <td>gtEq</td>
+    <td>db().prepareQuery("Kind").gtEq("Field", 1)</td>
+    <td>Filter operator GREATER OR EQUALS THAN</td>
+  </tr>
+  <tr>
+    <td>gt</td>
+    <td>db().prepareQuery("Kind").gt("Field", 1)</td>
+    <td>Filter operator GREATER THAN</td>
+  </tr>
+  <tr>
+    <td>ltEq</td>
+    <td>db().prepareQuery("Kind").ltEq("Field", 1)</td>
+    <td>Filter operator LESS OR EQUALS THAN</td>
+  </tr>
+  <tr>
+    <td>lt</td>
+    <td>db().prepareQuery("Kind").lt("Field", 1)</td>
+    <td>Filter operator LESS THAN</td>
+  </tr>
+  <tr>
+    <td>asc</td>
+    <td>db().prepareQuery("Kind").asc("Field")</td>
+    <td>Sort operator ASCENDING</td>
+  </tr>
+  <tr>
+    <td>desc</td>
+    <td>db().prepareQuery("Kind").desc("Field")</td>
+    <td>Sort operator DESCENDING</td>
+  </tr>
+  <tr>
+    <td>offset</td>
+    <td>db().prepareQuery("Kind").offset(10)</td>
+    <td>Set the offset for this query</td>
+  </tr>
+  <tr>
+    <td>limit</td>
+    <td>db().prepareQuery("Kind").limit(10)</td>
+    <td>Set the limit for this query</td>
+  </tr>
+  <tr>
+    <td>result</td>
+    <td>db().prepareQuery("Kind").result()</td>
+    <td>Returns an array of the resulting entities</td>
+  </tr>
+</table>
