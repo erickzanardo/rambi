@@ -18,6 +18,9 @@ Contents
   <tr>
     <td><a href="#memcache">Memcache</a></td>
   </tr>
+  <tr>
+    <td><a href="#urlfetch">URLFetch</a></td>
+  </tr>
 </table>
 
 Development: [![Build Status](https://travis-ci.org/erickzanardo/rambi.png?branch=master)](https://travis-ci.org/erickzanardo/rambi)
@@ -316,3 +319,19 @@ var service = {
 };
 ```
 
+URLFetch
+=====
+
+It's possible to fetch urls from your service using the urlfetcher.js module, the following code shows how to read a simple json from an url and write it on the response
+
+```javascript
+var fetcher = importModule('com/rambi/core/urlfetcher.js', 'urlfetcher');
+
+var service = {
+    get : function(req, resp) {
+      var str = fetcher().get("http://localhost:8080/check.json");
+      var ret = JSON.parse(str);
+      resp.print(JSON.stringify(ret));
+    }
+};
+```
