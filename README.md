@@ -253,3 +253,18 @@ It's possible to perform queries on your persisted data using the function prepa
     <td>Returns an array of the resulting entities</td>
   </tr>
 </table>
+
+Another way to perfom queries, is declaring a literal object that represents de query, and calling the query function passing that object as parameter, for example:
+
+
+```javascript
+var query = {
+    kind : "KIND",
+    filters : [{ field1 : { EQ : 1 } },
+               { field2 : { EQ : 2 } }],
+    limit: 1,
+    offset: 2,
+    sort: [{field1: "ASC"}]
+};
+result = db().query(query);
+```
