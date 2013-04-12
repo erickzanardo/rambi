@@ -209,6 +209,7 @@ This function is used to delete entities from the datastore and it requires the 
 db().delete("MyKind", 1);
 ```
 QUERIES
+
 It's possible to perform queries on your persisted data using the function prepareQuery, it's receive the kind as parameter and return an object based on the design pattern builder, that allow you to add filters, sorts, limit, offset and fecth the results, the following table list the avaiable functions on this object.
 
 <table>
