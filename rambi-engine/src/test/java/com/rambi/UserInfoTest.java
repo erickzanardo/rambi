@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.net.URLDecoder;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,6 +33,24 @@ public class UserInfoTest {
         assertFalse(o.get("admin").getAsBoolean());
         assertEquals("example.com", o.get("authDomain").getAsString());
         assertEquals("test@example.com", o.get("email").getAsString());
+
+        // Login
+        String loginUrl = o.get("loginUrl").getAsString();
+        loginUrl = URLDecoder.decode(loginUrl, "UTF-8");
+        assertEquals("/_ah/login?continue=http://myurl", loginUrl);
+
+        String loginUrlAuth = o.get("loginUrlAuth").getAsString();
+        loginUrlAuth = URLDecoder.decode(loginUrlAuth, "UTF-8");
+        assertEquals("/_ah/login?continue=http://myurl", loginUrlAuth);
+
+        // Logout
+        String logoutUrl = o.get("logoutUrl").getAsString();
+        logoutUrl = URLDecoder.decode(logoutUrl, "UTF-8");
+        assertEquals("/_ah/logout?continue=http://myurl", logoutUrl);
+
+        String logoutUrlAuth = o.get("logoutUrlAuth").getAsString();
+        logoutUrlAuth = URLDecoder.decode(logoutUrlAuth, "UTF-8");
+        assertEquals("/_ah/logout?continue=http://myurl", logoutUrlAuth);
     }
 
     @After
