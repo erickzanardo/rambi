@@ -5,6 +5,8 @@ import javax.naming.NamingException;
 
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalMemcacheServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.googlecode.mycontainer.gae.web.LocalServiceTestHelperFilter;
 import com.googlecode.mycontainer.kernel.ShutdownCommand;
 import com.googlecode.mycontainer.kernel.boot.ContainerBuilder;
@@ -27,8 +29,16 @@ public class TestServer {
         web.setContext("/");
         web.setResources("src/test/resources/webapp");
 
-        LocalServiceTestHelperFilter gae = new LocalServiceTestHelperFilter(new LocalDatastoreServiceTestConfig(),
-                new LocalMemcacheServiceTestConfig());
+        LocalServiceTestHelper helper = new LocalServiceTestHelper(
+                new LocalDatastoreServiceTestConfig(), new LocalMemcacheServiceTestConfig(),
+                new LocalUserServiceTestConfig());
+
+        helper.setEnvIsLoggedIn(true);
+        helper.setEnvIsAdmin(false);
+        helper.setEnvEmail("test@example.com");
+        helper.setEnvAuthDomain("example.com");
+
+        LocalServiceTestHelperFilter gae = new LocalServiceTestHelperFilter(helper);
         web.getFilters().add(new FilterDesc(gae, "/*"));
         server.deploy();
 

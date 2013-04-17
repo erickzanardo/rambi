@@ -14,6 +14,7 @@ import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.PutMethod;
+import org.junit.Assert;
 
 public class HttpUtils {
 
@@ -45,6 +46,7 @@ public class HttpUtils {
     }
 
     public static Response service(Request req) {
+
         HttpClient client = new HttpClient();
 
         String m = req.getMethod();
@@ -151,6 +153,13 @@ class Response {
     public Response(HttpMethod method, HttpClient client) {
         this.method = method;
         this.client = client;
+    }
+
+    public void assertStatus(int status) {
+        if (getStatus() != status) {
+            System.out.println(getAsString());
+            Assert.fail();
+        }
     }
 
     public String getHeader(String key) {

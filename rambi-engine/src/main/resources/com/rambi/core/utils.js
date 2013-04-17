@@ -44,6 +44,9 @@ var utils = {
                 return new Number(value) + 0;
             } else if (value instanceof java.lang.Boolean) {
                 return value.equals(java.lang.Boolean.TRUE) ? true : false;
+                // Primitive java boolean works with typeof
+            } else if (typeof(value) === "boolean") {
+                return value ? true : false;
             } else if (value instanceof java.util.Date) {
                 return new Date(value.getTime());
             } else if (value instanceof List) {
