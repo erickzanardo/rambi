@@ -7,12 +7,13 @@ var service = {
         ret.jsonFromReq = jsonFromReq;
 
         // Resp attrs
-        resp.characterEncoding("UTF-8");
-        resp.contentType("application/json");
-        resp.contentLength(10000);
-        resp.dateHeader("Date-Header", 0);
-        resp.intHeader("Int-Header", 1);
-        resp.header("Test-Header", "Test");
+        resp.characterEncoding("UTF-8")
+            .contentType("application/json")
+            .contentLength(10000)
+            .dateHeader("Date-Header", 0)
+            .intHeader("Int-Header", 1)
+            .header("Test-Header", "Test")
+            .addCookie("My-Cookie", "CookieTestValue")
 
         ret.characterEncoding = resp.characterEncoding();
         ret.contentType = resp.contentType();
@@ -34,9 +35,7 @@ var service = {
         ret.cookies = req.cookies();
         ret.headerTest = req.header("headerTest");
 
-        resp.addCookie("My-Cookie", "CookieTestValue");
-
-        resp.printJson(ret);
-        resp.status(403);
+        resp.printJson(ret)
+            .status(403);
     }
 };

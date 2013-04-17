@@ -177,24 +177,28 @@ function RambiResponse(resp) {
 
     this.printJson = function(val) {
         this.print(JSON.stringify(val));
+        return this;
     }
 
     this.print = function(val) {
         if (val != null) {
             _resp.getWriter().print(val.toString());
         }
+        return this;
     };
 
     this.println = function(val) {
         if (val != null) {
             _resp.getWriter().println(val.toString());
         }
+        return this;
     };
 
     this.characterEncoding = function(e) {
         if (e) {
             var ret = utils.jsonToJavaType(e);
             _resp.setCharacterEncoding(ret);
+            return this;
         } else {
             return utils.javaToJsonType(_resp.getCharacterEncoding());
         }
@@ -204,6 +208,7 @@ function RambiResponse(resp) {
         if (c) {
             var ret = utils.jsonToJavaType(c);
             _resp.setContentType(c);
+            return this;
         } else {
             return utils.javaToJsonType(_resp.getContentType());
         }
@@ -214,6 +219,7 @@ function RambiResponse(resp) {
             var ret = utils.jsonToJavaType(l);
             _resp.setContentLength(ret);
         }
+        return this;
     };
 
     this.dateHeader = function(key, l) {
@@ -221,6 +227,7 @@ function RambiResponse(resp) {
             var ret = utils.jsonToJavaType(l);
             _resp.addDateHeader(key, ret);
         }
+        return this;
     };
 
     this.intHeader = function(key, l) {
@@ -228,6 +235,7 @@ function RambiResponse(resp) {
             var ret = utils.jsonToJavaType(l);
             _resp.addIntHeader(key, ret);
         }
+        return this;
     };
 
     this.header = function(key, l) {
@@ -235,6 +243,7 @@ function RambiResponse(resp) {
             var ret = utils.jsonToJavaType(l);
             _resp.addHeader(key, ret);
         }
+        return this;
     };
 
     this.status = function (s) {
@@ -242,6 +251,7 @@ function RambiResponse(resp) {
             var ret = utils.jsonToJavaType(s);
             _resp.setStatus(ret);
         }
+        return this;
     };
 
     this.containsHeader = function (header) {
@@ -256,6 +266,7 @@ function RambiResponse(resp) {
             _resp.sendRedirect(utils.jsonToJavaType(url));
             this.requireChain = true;
         }
+        return this;
     };
 
     this.addCookie = function(key, value) {
@@ -263,6 +274,7 @@ function RambiResponse(resp) {
             var cookie = new Cookie(utils.jsonToJavaType(key), utils.jsonToJavaType(value));
             _resp.addCookie(cookie);
         }
+        return this;
     };
 };
 
